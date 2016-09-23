@@ -2,6 +2,7 @@ package cav.magnifierlite;
 
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,7 +59,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        camera = Camera.open(CAMERA_ID);
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.ECLAIR) {
+            camera = Camera.open(CAMERA_ID);
+        }else {
+
+        }
         checkPreferns();
     }
 
