@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MagnifierLite</string>
+    <string name="no_flash">No flash in devise</string>
 </resources>
