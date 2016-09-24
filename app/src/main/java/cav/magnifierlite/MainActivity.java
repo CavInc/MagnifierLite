@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,12 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.ECLAIR) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         }else {
             Toast.makeText(this,"Старый ведройд",Toast.LENGTH_LONG).show();
             camera = Camera.open();
         }
+        setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
     }
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (params.isZoomSupported()) {
            maxZoom = params.getMaxZoom();
         }
-        Log.d(TAG," "+isZoom);
+        Log.d(TAG," -ZOOM "+isZoom);
 
         if (params.getFlashMode()!=null) {
             isFlashMode = true;
@@ -303,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
+            /*
             try {
                 camera.setPreviewDisplay(holder); // сказали камере прослойку слушателя
                 camera.startPreview(); // начало трансляции
@@ -310,12 +313,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
                 showToast(e.getLocalizedMessage());
             }
-            setResizeViewPort();
+           // setResizeViewPort();
+            */
         }
 
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-            /*
+
             camera.stopPreview();// остановили трансляцию
             setCameraDisplayOrientation(CAMERA_ID);
             try {
@@ -325,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
                 showToast(e.getLocalizedMessage());
             }
-            */
+
         }
 
         @Override
