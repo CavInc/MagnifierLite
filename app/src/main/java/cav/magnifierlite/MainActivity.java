@@ -1,12 +1,18 @@
 package cav.magnifierlite;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +33,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private final String TAG = "MAGNIFER";
     private  final int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
@@ -77,6 +84,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
+
+        // разрешения для A6+
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG,"No A6+");
+        }else {
+            showToast("А тут надо поставить разрешения для A6+");
+            /*
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.CAMERA,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            },102);//  102 -число с потолка
+            Snackbar.make(mCoordinatorLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
+                    setAction(R.string.solve_txt, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            openApplicationSetting();
+                        }
+                    }).show();
+           */
+        }
+    }
+
+    private void openApplicationSetting(){
+        Intent appSettingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:"+getPackageName()));
+        startActivityForResult(appSettingIntent,PERMISOPN_REQUEST_SETTING_CODE);
+
     }
 
     @Override

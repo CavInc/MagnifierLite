@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Увеличительное стекло</string>
+    <string name="no_flash">Нет вспышки на устройстве</string>
 </resources>
