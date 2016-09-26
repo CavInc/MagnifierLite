@@ -1,5 +1,6 @@
 package cav.magnifierlite;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -32,7 +33,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener{
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private final String TAG = "MAGNIFER";
     private  final int CAMERA_ID = 0;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
-
+/*
         // разрешения для A6+
         if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -105,7 +106,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }).show();
            */
-        }
+      /*  }
+    */
     }
 
     private void openApplicationSetting(){
