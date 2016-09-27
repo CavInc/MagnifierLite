@@ -35,6 +35,7 @@ import java.util.List;
 
 public class MainActivity extends Activity implements View.OnClickListener{
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
+    private static final String ZOOM_STATE = "ZOOM_STATE";
     private final String TAG = "MAGNIFER";
     private  final int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
@@ -108,6 +109,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
            */
       /*  }
     */
+        if (savedInstanceState == null) {
+            // актифить прервый раз
+        }else {
+            lastZoom = savedInstanceState.getInt(ZOOM_STATE,0);
+        }
     }
 
     private void openApplicationSetting(){
@@ -128,6 +134,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
+        if (lastZoom!=0) {
+            //TODO усановить сохраненный зум
+        }
     }
 
     @Override
@@ -151,6 +160,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
 
         }
+    }
+
+    /**
+     * Сохраняем состояние активити
+     * @param outState
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ZOOM_STATE,lastZoom);
     }
 
     private void checkPreferns(){
@@ -198,11 +217,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private final int MODE_PLUS = 0;
     private final int MODE_MINUS = 1;
+    private int lastZoom = 0;
     // Работа с зумом
     private void setLensSize(int mode){
         if (isZoom) {
             Parameters params = camera.getParameters();
-            int lastZoom = params.getZoom();
+            lastZoom = params.getZoom();
             if (mode==MODE_PLUS) {
                 lastZoom +=1;
                 if (lastZoom>maxZoom) lastZoom=maxZoom;
