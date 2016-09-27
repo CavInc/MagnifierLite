@@ -86,6 +86,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
+
+        //TODO сделать нормальные разрешения для A6+
 /*
         // разрешения для A6+
         if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
@@ -111,20 +113,23 @@ public class MainActivity extends Activity implements View.OnClickListener{
     */
         if (savedInstanceState == null) {
             // актифить прервый раз
+            Log.d(TAG,"FIRST START");
         }else {
+            Log.d(TAG, "GET SAVE VALUE");
             lastZoom = savedInstanceState.getInt(ZOOM_STATE,0);
+            Log.d(TAG,Integer.toString(lastZoom));
         }
     }
 
     private void openApplicationSetting(){
         Intent appSettingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:"+getPackageName()));
         startActivityForResult(appSettingIntent,PERMISOPN_REQUEST_SETTING_CODE);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG,"RESUME");
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         }else {
@@ -142,6 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG,"PAUSE");
         if (camera != null) camera.release();
         camera = null;
     }
@@ -169,6 +175,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState");
         outState.putInt(ZOOM_STATE,lastZoom);
     }
 
@@ -182,6 +189,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         if (params.getFlashMode()!=null) {
             isFlashMode = true;
+       }else {
+            flashImgBtn.setImageResource(R.drawable.ic_flash_on_gray_24dp1);
         }
 
     }
@@ -222,7 +231,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void setLensSize(int mode){
         if (isZoom) {
             Parameters params = camera.getParameters();
-            lastZoom = params.getZoom();
+            //lastZoom = params.getZoom();
             if (mode==MODE_PLUS) {
                 lastZoom +=1;
                 if (lastZoom>maxZoom) lastZoom=maxZoom;
