@@ -183,7 +183,20 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Parameters params = camera.getParameters();
         isZoom = params.isZoomSupported();
         if (params.isZoomSupported()) {
-           maxZoom = params.getMaxZoom();
+            maxZoom = params.getMaxZoom();
+            List<Integer> ratios= params.getZoomRatios();
+            /*
+            коэффициенты масштабирования в 1/100 с шагом.
+            x: а зум 3.2x возвращается как 320.
+            Число элементов getMaxZoom () + 1. Список сортируется от мала до велика.
+            Первый элемент всегда 100.
+            Последним элементом является коэффициент увеличения максимального значения масштабирования.
+             */
+            for (int i=0;i<ratios.size();i++){
+                Log.d(TAG+" RATIO ",Integer.toString(ratios.get(i)));
+            }
+
+
         }
         Log.d(TAG," -ZOOM "+isZoom);
 
