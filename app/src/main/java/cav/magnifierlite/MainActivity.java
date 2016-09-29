@@ -57,6 +57,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private int maxZoom;
 
     private List<String> colorEffect;
+    private List<Integer> zoomRatio;
+    private int zoomOffset=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +187,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         isZoom = params.isZoomSupported();
         if (params.isZoomSupported()) {
             maxZoom = params.getMaxZoom();
-            List<Integer> ratios= params.getZoomRatios();
+            //zoomRatio
+            zoomRatio = params.getZoomRatios();
             /*
             коэффициенты масштабирования в 1/100 с шагом.
             x: а зум 3.2x возвращается как 320.
@@ -193,8 +196,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Первый элемент всегда 100.
             Последним элементом является коэффициент увеличения максимального значения масштабирования.
              */
-            for (int i=0;i<ratios.size();i++){
-                Log.d(TAG+" RATIO ",Integer.toString(ratios.get(i)));
+            if (maxZoom>10) {
+                if (maxZoom % 2==0){
+                    zoomOffset=4;
+                }else {
+                    zoomOffset = 5;
+                }
             }
         }
         Log.d(TAG," -ZOOM "+isZoom);
@@ -245,14 +252,15 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Parameters params = camera.getParameters();
             //lastZoom = params.getZoom();
             if (mode==MODE_PLUS) {
-                lastZoom +=1;
+                lastZoom +=zoomOffset;
                 if (lastZoom>maxZoom) lastZoom=maxZoom;
             }
             if (mode==MODE_MINUS) {
-                lastZoom -=1;
+                lastZoom -=zoomOffset;
                 if (lastZoom<0) lastZoom=0;
             }
-            zoomText.setText("x "+Integer.toString(lastZoom));
+            Log.d(TAG,Integer.toString(lastZoom));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
             params.setZoom(lastZoom);
             camera.setParameters(params);
         }
