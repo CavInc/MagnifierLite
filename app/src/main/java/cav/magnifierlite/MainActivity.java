@@ -141,6 +141,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         setStartFocus();
         if (lastZoom!=0) {
             //TODO усановить сохраненный зум
+            setZoom(lastZoom);
         }
     }
 
@@ -195,8 +196,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
             for (int i=0;i<ratios.size();i++){
                 Log.d(TAG+" RATIO ",Integer.toString(ratios.get(i)));
             }
-
-
         }
         Log.d(TAG," -ZOOM "+isZoom);
 
@@ -256,6 +255,15 @@ public class MainActivity extends Activity implements View.OnClickListener{
             zoomText.setText("x "+Integer.toString(lastZoom));
             params.setZoom(lastZoom);
             camera.setParameters(params);
+        }
+    }
+    // установка значения зума
+    private void setZoom(int zoomValue){
+        if (isZoom){
+            Parameters params = camera.getParameters();
+            params.setZoom(zoomValue);
+            camera.setParameters(params);
+            zoomText.setText("x "+Integer.toString(lastZoom));
         }
     }
 
