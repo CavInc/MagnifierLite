@@ -86,6 +86,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         sv = (SurfaceView) findViewById(R.id.surfaceView);
         holder = sv.getHolder();
 
+        sv.setOnClickListener(this);
+
+
+
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
 
@@ -167,7 +171,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.zoomMunus:
                 setLensSize(MODE_MINUS);
                 break;
-
+            case R.id.surfaceView:
+                Log.d(TAG," SV CLICK");
+                break;
         }
     }
 
@@ -271,7 +277,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Parameters params = camera.getParameters();
             params.setZoom(zoomValue);
             camera.setParameters(params);
-            zoomText.setText("x "+Integer.toString(lastZoom));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
         }
     }
 
