@@ -12,13 +12,12 @@ import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -31,9 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener,View.OnTouchListener{
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private static final String ZOOM_STATE = "ZOOM_STATE";
     private final String TAG = "MAGNIFER";
@@ -49,6 +49,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ImageView flashImgBtn;
     private ImageView zoomPlusBtn;
     private ImageView zoomMinusBtn;
+
+    private ScaleGestureDetector scaleGestureDetector;
 
     private boolean flashMode = false;
 
@@ -87,7 +89,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         holder = sv.getHolder();
 
         sv.setOnClickListener(this);
-
+       // sv.setOnTouchListener(this);
 
 
         holderCallback = new HolderCallback();
@@ -173,6 +175,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.surfaceView:
                 Log.d(TAG," SV CLICK");
+                setFocusManual();
                 break;
         }
     }
@@ -285,6 +288,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void setFocusManual(){
         Parameters params = camera.getParameters();
         if (params.getMaxNumFocusAreas() > 0){
+            List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
 
         }
     }
@@ -401,6 +405,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
         sv.getLayoutParams().height = (int) (rectPreview.bottom);
         sv.getLayoutParams().width = (int) (rectPreview.right);
     }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        Log.d(TAG,"TOUCH");
+        Log.d(TAG,motionEvent.toString());
+        return false;
+    }
+
 
     class HolderCallback implements SurfaceHolder.Callback {
 
