@@ -158,6 +158,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         if (stop) {
             camera.stopPreview();// остановили трансляцию
+            setCameraDisplayOrientation(CAMERA_ID);
             startCamera();
         }
     }
