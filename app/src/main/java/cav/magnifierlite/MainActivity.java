@@ -12,13 +12,15 @@ import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -31,9 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener,View.OnTouchListener{
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private static final String ZOOM_STATE = "ZOOM_STATE";
     private final String TAG = "MAGNIFER";
@@ -49,6 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ImageView flashImgBtn;
     private ImageView zoomPlusBtn;
     private ImageView zoomMinusBtn;
+
+    private ScaleGestureDetector scaleGestureDetector;
 
     private boolean flashMode = false;
 
@@ -86,23 +91,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
         sv = (SurfaceView) findViewById(R.id.surfaceView);
         holder = sv.getHolder();
 
+        sv.setOnClickListener(this);
+       // sv.setOnTouchListener(this);
+
+
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
 
         //TODO сделать нормальные разрешения для A6+
-/*
+
         // разрешения для A6+
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG,"No A6+");
         }else {
             showToast("А тут надо поставить разрешения для A6+");
-            /*
+
             ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            },102);//  102 -число с потолка
-            Snackbar.make(mCoordinatorLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
+                    android.Manifest.permission.CAMERA},102);//  102 -число с потолка
+            /*
+            Snackbar.make(this.getBaseContext(),"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
                     setAction(R.string.solve_txt, new View.OnClickListener() {
 
                         @Override
@@ -110,9 +117,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
                             openApplicationSetting();
                         }
                     }).show();
-           */
-      /*  }
-    */
+            */
+        }
+
         if (savedInstanceState == null) {
             // актифить прервый раз
             Log.d(TAG,"FIRST START");
@@ -128,10 +135,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         startActivityForResult(appSettingIntent,PERMISOPN_REQUEST_SETTING_CODE);
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"RESUME");
+
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         }else {
@@ -145,6 +155,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
             //TODO усановить сохраненный зум
             setZoom(lastZoom);
         }
+
+        if (stop) {
+            camera.stopPreview();// остановили трансляцию
+            setCameraDisplayOrientation(CAMERA_ID);
+            startCamera();
+        }
     }
 
     @Override
@@ -153,6 +169,15 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Log.d(TAG,"PAUSE");
         if (camera != null) camera.release();
         camera = null;
+    }
+
+    private boolean stop=false;
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG,"STOP");
+        stop=true;
     }
 
     @Override
@@ -167,7 +192,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.zoomMunus:
                 setLensSize(MODE_MINUS);
                 break;
-
+            case R.id.surfaceView:
+                Log.d(TAG," SV CLICK");
+                setFocusManual();
+                break;
         }
     }
 
@@ -271,7 +299,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Parameters params = camera.getParameters();
             params.setZoom(zoomValue);
             camera.setParameters(params);
-            zoomText.setText("x "+Integer.toString(lastZoom));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
         }
     }
 
@@ -279,6 +307,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void setFocusManual(){
         Parameters params = camera.getParameters();
         if (params.getMaxNumFocusAreas() > 0){
+            List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
 
         }
     }
@@ -396,10 +425,28 @@ public class MainActivity extends Activity implements View.OnClickListener{
         sv.getLayoutParams().width = (int) (rectPreview.right);
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        Log.d(TAG,"TOUCH");
+        Log.d(TAG,motionEvent.toString());
+        return false;
+    }
+
+    private void startCamera(){
+        try {
+            camera.setPreviewDisplay(holder);
+            camera.startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast(e.getLocalizedMessage());
+        }
+    }
+
     class HolderCallback implements SurfaceHolder.Callback {
 
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
+            Log.d(TAG,"sufraceCreated");
             /*
             try {
                 camera.setPreviewDisplay(holder); // сказали камере прослойку слушателя
@@ -414,17 +461,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
+            Log.d(TAG,"sufraceChanged");
 
             camera.stopPreview();// остановили трансляцию
             setCameraDisplayOrientation(CAMERA_ID);
-            try {
-                camera.setPreviewDisplay(holder);
-                camera.startPreview();
-            } catch (Exception e) {
-                e.printStackTrace();
-                showToast(e.getLocalizedMessage());
-            }
-
+            startCamera();
         }
 
         @Override
