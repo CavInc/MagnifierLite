@@ -63,6 +63,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     private List<String> colorEffect;
     private List<Integer> zoomRatio;
+
+    private List <String> supportFocusMode;
+
     private int zoomOffset=1;
 
     @Override
@@ -105,6 +108,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,"No A6+");
         }else {
             showToast("А тут надо поставить разрешения для A6+");
+            Log.d(TAG,"A6+");
 
             ActivityCompat.requestPermissions(this, new String[] {
                     android.Manifest.permission.CAMERA},102);//  102 -число с потолка
@@ -239,7 +243,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
        }else {
             flashImgBtn.setImageResource(R.drawable.ic_flash_on_gray_24dp1);
         }
-
+       supportFocusMode = params.getSupportedFocusModes();
     }
 
     // включает выключает вспышку
@@ -267,7 +271,13 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     // Установка фокуса при старте приложения
     private void setStartFocus(){
         Parameters params = camera.getParameters();
-        params.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        String focus = params.getFocusMode();
+        for (int i=0;i<supportFocusMode.size();i++){
+             if (supportFocusMode.get(i).equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                focus = Parameters.FOCUS_MODE_CONTINUOUS_PICTURE;
+            }
+        }
+        params.setFocusMode(focus);
         camera.setParameters(params);
     }
 

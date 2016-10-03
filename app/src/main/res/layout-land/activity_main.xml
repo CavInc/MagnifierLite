@@ -14,7 +14,7 @@
         android:id="@+id/zoom_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="x 0"
+        android:text="@string/x_1_00"
         android:textSize="24sp"
         android:textColor="@color/white"
         android:shadowColor="@color/gray"
