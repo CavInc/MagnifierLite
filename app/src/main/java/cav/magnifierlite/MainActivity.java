@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.provider.Settings;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -95,7 +97,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         holder = sv.getHolder();
 
         sv.setOnClickListener(this);
-       // sv.setOnTouchListener(this);
+        //sv.setOnTouchListener(this);
 
 
         holderCallback = new HolderCallback();
@@ -137,6 +139,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private void openApplicationSetting(){
         Intent appSettingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:"+getPackageName()));
         startActivityForResult(appSettingIntent,PERMISOPN_REQUEST_SETTING_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG," ON REQUEST PERMISSION");
     }
 
 
@@ -318,7 +326,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         Parameters params = camera.getParameters();
         if (params.getMaxNumFocusAreas() > 0){
             List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
-
+            Rect areaRect1 = new Rect(-100, -100, 100, 100); // центр экрана
+            focusAreas.add(new Camera.Area(areaRect1, 600));
+            params.setMeteringAreas(focusAreas);
+            camera.setParameters(params);
         }
     }
 
