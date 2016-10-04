@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private SurfaceHolder holder;
     private Camera camera;
     private HolderCallback holderCallback;
+
+    private FrameLayout mFrameLayout;
 
     private TextView zoomText;
     private ImageView flashImgBtn;
@@ -93,6 +96,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         zoomPlusBtn.setOnClickListener(this);
         zoomMinusBtn.setOnClickListener(this);
 
+        mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
+
         sv = (SurfaceView) findViewById(R.id.surfaceView);
         holder = sv.getHolder();
 
@@ -106,24 +111,22 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         //TODO сделать нормальные разрешения для A6+
 
         // разрешения для A6+
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG,"No A6+");
-        }else {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             showToast("А тут надо поставить разрешения для A6+");
             Log.d(TAG,"A6+");
 
             ActivityCompat.requestPermissions(this, new String[] {
                     android.Manifest.permission.CAMERA},102);//  102 -число с потолка
-            /*
-            Snackbar.make(this.getBaseContext(),"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
-                    setAction(R.string.solve_txt, new View.OnClickListener() {
+
+            Snackbar.make(mFrameLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
+                    setAction("Дать разрешение", new View.OnClickListener() {
 
                         @Override
                         public void onClick(View view) {
                             openApplicationSetting();
                         }
                     }).show();
-            */
+
         }
 
         if (savedInstanceState == null) {
