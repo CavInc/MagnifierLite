@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Увеличительное стекло</string>
     <string name="no_flash">Нет вспышки на устройстве</string>
+    <string name="give_permision">Дать разрешение</string>
 </resources>

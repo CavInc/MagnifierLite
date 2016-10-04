@@ -109,7 +109,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         holder.addCallback(holderCallback);
 
         //TODO сделать нормальные разрешения для A6+
-
+/*
         // разрешения для A6+
         if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             showToast("А тут надо поставить разрешения для A6+");
@@ -128,6 +128,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                     }).show();
 
         }
+        */
 
         if (savedInstanceState == null) {
             // актифить прервый раз
@@ -148,6 +149,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(TAG," ON REQUEST PERMISSION");
+        if (requestCode == 102){
+
+        }
     }
 
 
@@ -157,16 +161,46 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onResume();
         Log.d(TAG,"RESUME");
 
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.FROYO) {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG,"A6+");
+
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.CAMERA},102);//  102 -число с потолка
+
+            Snackbar.make(mFrameLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
+                    setAction(R.string.give_permision, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            openApplicationSetting();
+                        }
+                    }).show();
+
+        } else {
+            initalizeCamera();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"PAUSE");
+        if (camera != null) camera.release();
+        camera = null;
+    }
+
+    private void initalizeCamera(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
-        }else {
-            Toast.makeText(this,"Старый ведройд",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Старый ведройд", Toast.LENGTH_LONG).show();
             camera = Camera.open();
         }
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
-        if (lastZoom!=0) {
+        if (lastZoom != 0) {
             //TODO усановить сохраненный зум
             setZoom(lastZoom);
         }
@@ -176,14 +210,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             setCameraDisplayOrientation(CAMERA_ID);
             startCamera();
         }
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG,"PAUSE");
-        if (camera != null) camera.release();
-        camera = null;
     }
 
     private boolean stop=false;
@@ -486,10 +513,11 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
             Log.d(TAG,"sufraceChanged");
-
-            camera.stopPreview();// остановили трансляцию
-            setCameraDisplayOrientation(CAMERA_ID);
-            startCamera();
+            if (camera!=null) {
+                camera.stopPreview();// остановили трансляцию
+                setCameraDisplayOrientation(CAMERA_ID);
+                startCamera();
+            }
         }
 
         @Override
