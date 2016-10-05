@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.provider.Settings;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private Camera camera;
     private HolderCallback holderCallback;
 
+    private FrameLayout mFrameLayout;
+
     private TextView zoomText;
     private ImageView flashImgBtn;
     private ImageView zoomPlusBtn;
@@ -63,6 +68,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     private List<String> colorEffect;
     private List<Integer> zoomRatio;
+
+    private List <String> supportFocusMode;
+
     private int zoomOffset=1;
 
     @Override
@@ -88,37 +96,39 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         zoomPlusBtn.setOnClickListener(this);
         zoomMinusBtn.setOnClickListener(this);
 
+        mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
+
         sv = (SurfaceView) findViewById(R.id.surfaceView);
         holder = sv.getHolder();
 
         sv.setOnClickListener(this);
-       // sv.setOnTouchListener(this);
+        //sv.setOnTouchListener(this);
 
 
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
 
         //TODO сделать нормальные разрешения для A6+
-
+/*
         // разрешения для A6+
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG,"No A6+");
-        }else {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             showToast("А тут надо поставить разрешения для A6+");
+            Log.d(TAG,"A6+");
 
             ActivityCompat.requestPermissions(this, new String[] {
                     android.Manifest.permission.CAMERA},102);//  102 -число с потолка
-            /*
-            Snackbar.make(this.getBaseContext(),"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
-                    setAction(R.string.solve_txt, new View.OnClickListener() {
+
+            Snackbar.make(mFrameLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
+                    setAction("Дать разрешение", new View.OnClickListener() {
 
                         @Override
                         public void onClick(View view) {
                             openApplicationSetting();
                         }
                     }).show();
-            */
+
         }
+        */
 
         if (savedInstanceState == null) {
             // актифить прервый раз
@@ -135,6 +145,17 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         startActivityForResult(appSettingIntent,PERMISOPN_REQUEST_SETTING_CODE);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG," ON REQUEST PERMISSION");
+        if (requestCode == 102){
+            if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                initalizeCamera();
+            }
+        }
+    }
+
 
 
     @Override
@@ -142,16 +163,45 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onResume();
         Log.d(TAG,"RESUME");
 
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.FROYO) {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG,"A6+");
+
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.CAMERA},102);//  102 -число с потолка
+
+            Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
+                    setAction(R.string.give_permision, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            openApplicationSetting();
+                        }
+                    }).show();
+
+        } else {
+            initalizeCamera();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"PAUSE");
+        if (camera != null) camera.release();
+        camera = null;
+    }
+
+    private void initalizeCamera(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
-        }else {
-            Toast.makeText(this,"Старый ведройд",Toast.LENGTH_LONG).show();
+        } else {
             camera = Camera.open();
         }
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
-        if (lastZoom!=0) {
+        if (lastZoom != 0) {
             //TODO усановить сохраненный зум
             setZoom(lastZoom);
         }
@@ -161,14 +211,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             setCameraDisplayOrientation(CAMERA_ID);
             startCamera();
         }
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG,"PAUSE");
-        if (camera != null) camera.release();
-        camera = null;
     }
 
     private boolean stop=false;
@@ -239,7 +282,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
        }else {
             flashImgBtn.setImageResource(R.drawable.ic_flash_on_gray_24dp1);
         }
-
+       supportFocusMode = params.getSupportedFocusModes();
     }
 
     // включает выключает вспышку
@@ -267,7 +310,13 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     // Установка фокуса при старте приложения
     private void setStartFocus(){
         Parameters params = camera.getParameters();
-        params.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        String focus = params.getFocusMode();
+        for (int i=0;i<supportFocusMode.size();i++){
+             if (supportFocusMode.get(i).equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                focus = Parameters.FOCUS_MODE_CONTINUOUS_PICTURE;
+            }
+        }
+        params.setFocusMode(focus);
         camera.setParameters(params);
     }
 
@@ -308,7 +357,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         Parameters params = camera.getParameters();
         if (params.getMaxNumFocusAreas() > 0){
             List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
-
+            Rect areaRect1 = new Rect(-100, -100, 100, 100); // центр экрана
+            focusAreas.add(new Camera.Area(areaRect1, 600));
+            params.setMeteringAreas(focusAreas);
+            camera.setParameters(params);
         }
     }
 
@@ -462,10 +514,11 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
             Log.d(TAG,"sufraceChanged");
-
-            camera.stopPreview();// остановили трансляцию
-            setCameraDisplayOrientation(CAMERA_ID);
-            startCamera();
+            if (camera!=null) {
+                camera.stopPreview();// остановили трансляцию
+                setCameraDisplayOrientation(CAMERA_ID);
+                startCamera();
+            }
         }
 
         @Override
