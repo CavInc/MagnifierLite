@@ -150,7 +150,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(TAG," ON REQUEST PERMISSION");
         if (requestCode == 102){
-
+            if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                initalizeCamera();
+            }
         }
     }
 
@@ -167,7 +169,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             ActivityCompat.requestPermissions(this, new String[] {
                     android.Manifest.permission.CAMERA},102);//  102 -число с потолка
 
-            Snackbar.make(mFrameLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
+            Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
                     setAction(R.string.give_permision, new View.OnClickListener() {
 
                         @Override
@@ -194,7 +196,6 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         } else {
-            Toast.makeText(this, "Старый ведройд", Toast.LENGTH_LONG).show();
             camera = Camera.open();
         }
         setPreviewSize(FULL_SCREEN);

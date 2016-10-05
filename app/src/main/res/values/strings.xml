@@ -3,4 +3,5 @@
     <string name="no_flash">No flash in devise</string>
     <string name="x_1_00" translatable="false">x 1.00</string>
     <string name="give_permision">Give permission</string>
+    <string name="permision_str">To work correctly you need to give the required permissions</string>
 </resources>
