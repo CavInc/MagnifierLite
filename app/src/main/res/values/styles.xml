@@ -13,4 +13,9 @@
         <item name="android:windowBackground">@null</item>
     </style>
 
+    <!-- My Style -->
+    <style name="LayoutPanel">
+
+    </style>
+
 </resources>

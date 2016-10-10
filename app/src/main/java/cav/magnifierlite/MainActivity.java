@@ -58,6 +58,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private ImageView zoomPlusBtn;
     private ImageView zoomMinusBtn;
 
+    private ImageView frezzeBtn;
+    private ImageView photoBtn;
+
     private ScaleGestureDetector scaleGestureDetector;
 
     private boolean flashMode = false;
@@ -95,6 +98,11 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         flashImgBtn.setOnClickListener(this);
         zoomPlusBtn.setOnClickListener(this);
         zoomMinusBtn.setOnClickListener(this);
+
+        frezzeBtn = (ImageView) findViewById(R.id.frezee_img);
+        photoBtn = (ImageView) findViewById(R.id.photo_img);
+
+        frezzeBtn.setOnClickListener(this);
 
         mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
 
@@ -239,6 +247,25 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 Log.d(TAG," SV CLICK");
                 setFocusManual();
                 break;
+            case R.id.frezee_img:
+                Log.d(TAG,"FREEZE");
+                frezzeOnOff();
+                break;
+        }
+    }
+
+    private boolean frezzeFlg = false;
+
+    private void frezzeOnOff() {
+        if (frezzeFlg) {
+            frezzeFlg = false;
+            frezzeBtn.setImageResource(R.drawable.ic_pause_black_24dp);
+            startCamera();
+
+        } else {
+            frezzeFlg = true;
+            frezzeBtn.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+            camera.stopPreview();
         }
     }
 
