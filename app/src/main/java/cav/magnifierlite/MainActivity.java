@@ -12,6 +12,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 
 import android.os.Bundle;
@@ -35,7 +36,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +106,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         photoBtn = (ImageView) findViewById(R.id.photo_img);
 
         frezzeBtn.setOnClickListener(this);
+        photoBtn.setOnClickListener(this);
 
         mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
 
@@ -248,8 +252,11 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 setFocusManual();
                 break;
             case R.id.frezee_img:
-                Log.d(TAG,"FREEZE");
                 frezzeOnOff();
+                break;
+            case R.id.photo_img:
+                Log.d(TAG,"PHOTO");
+                takePhoto();
                 break;
         }
     }
@@ -394,6 +401,67 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private void showToast(String message){
         Toast.makeText(this,message,Toast.LENGTH_LONG).show();
     }
+
+    // делаем снимок
+    private void takePhoto(){
+        if (!frezzeFlg) {
+            Log.d(TAG,"NO FREEZE");
+            camera.takePicture(null,null,null,mPictureCallback);
+        }
+    }
+
+    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback(){
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            Uri pictureFile = generateUri();
+            try {
+                savePhotoInFile(data, pictureFile);
+                showToast("Save file: " + pictureFile);
+                galleryAddPic(pictureFile.toString());
+            }catch (Exception e){
+                showToast(getString(R.string.error_file));
+            }
+            camera.startPreview();
+        }
+    };
+
+    private void savePhotoInFile(byte[] data, Uri pictureFile) throws Exception {
+        if (pictureFile == null) throw new Exception();
+        OutputStream os = getContentResolver().openOutputStream(pictureFile);
+        os.write(data);
+        os.close();
+    }
+    private String mPath;
+
+    // путь к каталогу для сохранения
+    private Uri generateUri(){
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+            return null;
+        File path = new File (Environment.getExternalStorageDirectory(), "MagnifierLite");
+        // для общего каталога Pictures/
+        //File path = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
+        if (! path.exists()) {
+            if (!path.mkdirs()){
+                return null;
+            }
+        }
+        mPath = path.getPath();
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        File newFile = new File(path.getPath() + File.separator +"MF" +timeStamp + ".jpg");
+        return Uri.fromFile(newFile);
+    }
+
+    // Региструем в галерее
+    private void galleryAddPic(String pathPhoto){
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(pathPhoto);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+
 
 
     private void setResizeViewPort(){

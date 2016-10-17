@@ -4,4 +4,5 @@
     <string name="no_flash">Нет вспышки на устройстве</string>
     <string name="give_permision">Дать разрешение</string>
     <string name="permision_str">Для корректной работы необходимо дать требуемые разрешения</string>
+    <string name="error_file">Ошибка: не могу записать файл</string>
 </resources>
