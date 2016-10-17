@@ -120,27 +120,6 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         holderCallback = new HolderCallback();
         holder.addCallback(holderCallback);
 
-        //TODO сделать нормальные разрешения для A6+
-/*
-        // разрешения для A6+
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            showToast("А тут надо поставить разрешения для A6+");
-            Log.d(TAG,"A6+");
-
-            ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA},102);//  102 -число с потолка
-
-            Snackbar.make(mFrameLayout,"Для корректной работы необходимо дать требуемые разрешения ",Snackbar.LENGTH_LONG).
-                    setAction("Дать разрешение", new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View view) {
-                            openApplicationSetting();
-                        }
-                    }).show();
-
-        }
-        */
 
         if (savedInstanceState == null) {
             // актифить прервый раз
@@ -165,6 +144,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 initalizeCamera();
             }
+            if (grantResults[1]==PackageManager.PERMISSION_GRANTED){
+                // обработка разрешения на запись
+            }
         }
     }
 
@@ -175,11 +157,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onResume();
         Log.d(TAG,"RESUME");
 
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG,"A6+");
 
             ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA},102);//  102 -число с потолка
+                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},102);//  102 -число с потолка
 
             Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
                     setAction(R.string.give_permision, new View.OnClickListener() {
