@@ -417,7 +417,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Uri pictureFile = generateUri();
             try {
                 savePhotoInFile(data, pictureFile);
-                showToast("Save file: " + pictureFile);
+                showToast(getString(R.string.save_file) + pictureFile);
                 galleryAddPic(pictureFile.toString());
             }catch (Exception e){
                 showToast(getString(R.string.error_file));

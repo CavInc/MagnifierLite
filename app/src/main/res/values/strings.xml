@@ -5,4 +5,5 @@
     <string name="give_permision">Give permission</string>
     <string name="permision_str">To work correctly you need to give the required permissions</string>
     <string name="error_file">Error: can\'t save file</string>
+    <string name="save_file">"Save file: "</string>
 </resources>
