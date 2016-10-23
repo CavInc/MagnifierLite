@@ -389,9 +389,16 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private void takePhoto(){
         if (!frezzeFlg) {
             Log.d(TAG,"NO FREEZE");
-            camera.takePicture(null,null,null,mPictureCallback);
+            camera.takePicture(mShutterCallback,null,null,mPictureCallback);
         }
     }
+
+    private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
+        @Override
+        public void onShutter() {
+            Log.d(TAG,"SHUTTER");
+        }
+    };
 
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback(){
 
