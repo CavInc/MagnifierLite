@@ -42,7 +42,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements View.OnClickListener,View.OnTouchListener{
+public class MainActivity extends Activity implements View.OnClickListener,View.OnTouchListener,Camera.AutoFocusCallback {
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private static final String ZOOM_STATE = "ZOOM_STATE";
     private final String TAG = "MAGNIFER";
@@ -292,6 +292,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 }
             }
         }
+
         Log.d(TAG," -ZOOM "+isZoom);
 
         if (params.getFlashMode()!=null) {
@@ -300,6 +301,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             flashImgBtn.setImageResource(R.drawable.ic_flash_on_gray_24dp1);
         }
        supportFocusMode = params.getSupportedFocusModes();
+        /*
+        for (String l :supportFocusMode){
+            Log.d(TAG+" focus Mode:",l);
+        }
+        */
+
     }
 
     // включает выключает вспышку
@@ -389,7 +396,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private void takePhoto(){
         if (!frezzeFlg) {
             Log.d(TAG,"NO FREEZE");
-            camera.takePicture(mShutterCallback,null,null,mPictureCallback);
+            //Log.d(TAG,camera.getParameters().getFocusMode());
+
+            camera.autoFocus(this);
+            //camera.takePicture(mShutterCallback,null,null,mPictureCallback);
         }
     }
 
@@ -397,6 +407,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         @Override
         public void onShutter() {
             Log.d(TAG,"SHUTTER");
+            //Log.d(TAG,camera.getParameters().getFocusMode());
         }
     };
 
@@ -576,6 +587,14 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         } catch (Exception e) {
             e.printStackTrace();
             showToast(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void onAutoFocus(boolean success, Camera lCamera) {
+        if (success) {
+            lCamera.takePicture(mShutterCallback, null, null, mPictureCallback);
+            camera.cancelAutoFocus();
         }
     }
 
