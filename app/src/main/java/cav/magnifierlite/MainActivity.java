@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private List<Integer> zoomRatio;
 
     private List <String> supportFocusMode;
+    private List<Camera.Size> pictureSize;
 
     private int zoomOffset=1;
 
@@ -270,6 +271,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         outState.putInt(ZOOM_STATE,lastZoom);
     }
 
+    private int maxWidth=0;
+    private int maxHeight=0;
+
     private void checkPreferns(){
         Parameters params = camera.getParameters();
         isZoom = params.isZoomSupported();
@@ -306,6 +310,15 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG+" focus Mode:",l);
         }
         */
+        // размеры подперживаемые камерой
+        pictureSize =  params.getSupportedPictureSizes();
+        for (Camera.Size l:pictureSize){
+            Log.d(TAG+" SIZE:","WIDTH:"+Integer.toString(l.width)+" HEIGHT: "+Integer.toString(l.height));
+            if  (maxWidth<l.width) {
+                maxWidth=l.width;
+                maxHeight=l.height;
+            }
+        }
 
     }
 
@@ -405,6 +418,11 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         if (!frezzeFlg) {
             Log.d(TAG,"NO FREEZE");
             //Log.d(TAG,camera.getParameters().getFocusMode());
+            Parameters parameters = camera.getParameters();
+            parameters.setPictureSize(maxWidth, maxHeight);
+            camera.setParameters(parameters);
+            Log.d(TAG," W:"+Integer.toString(maxWidth));
+
             if (isAutoFocus()) {
                 camera.autoFocus(this);
             }else {
