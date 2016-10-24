@@ -392,14 +392,24 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         Toast.makeText(this,message,Toast.LENGTH_LONG).show();
     }
 
+    private boolean isAutoFocus (){
+        for (int i=0;i<supportFocusMode.size();i++){
+            if (supportFocusMode.get(i).equals(Parameters.FOCUS_MODE_AUTO)) {
+                return true;
+            }
+        }
+        return false;
+    }
     // делаем снимок
     private void takePhoto(){
         if (!frezzeFlg) {
             Log.d(TAG,"NO FREEZE");
             //Log.d(TAG,camera.getParameters().getFocusMode());
-
-            camera.autoFocus(this);
-            //camera.takePicture(mShutterCallback,null,null,mPictureCallback);
+            if (isAutoFocus()) {
+                camera.autoFocus(this);
+            }else {
+                camera.takePicture(mShutterCallback,null,null,mPictureCallback);
+            }
         }
     }
 
