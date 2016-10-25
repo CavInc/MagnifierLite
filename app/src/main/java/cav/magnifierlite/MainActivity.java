@@ -413,6 +413,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         }
         return false;
     }
+
+    // мега пихели
+    // long pixelCountTemp = cameraParams.getSupportedPictureSizes().get(j).width * cameraParams.getSupportedPictureSizes().get(j).height; // Just changed i to j in this loop
+    // maxResolution = ((float)pixelCountTemp) / (1024000.0f);
     // делаем снимок
     private void takePhoto(){
         if (!frezzeFlg) {
@@ -421,7 +425,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Parameters parameters = camera.getParameters();
             parameters.setPictureSize(maxWidth, maxHeight);
             camera.setParameters(parameters);
-            Log.d(TAG," W:"+Integer.toString(maxWidth));
+
 
             if (isAutoFocus()) {
                 camera.autoFocus(this);
