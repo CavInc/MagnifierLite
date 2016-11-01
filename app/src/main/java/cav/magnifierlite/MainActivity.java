@@ -64,7 +64,6 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private ImageView frezzeBtn;
     private ImageView photoBtn;
 
-    private ScaleGestureDetector scaleGestureDetector;
 
     private boolean flashMode = false;
 
@@ -77,6 +76,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     private List <String> supportFocusMode;
     private List<Camera.Size> pictureSize;
+
+    private ScaleGestureDetector mGestureDetector;
 
     private int zoomOffset=1;
 
@@ -114,8 +115,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         sv = (SurfaceView) findViewById(R.id.surfaceView);
         holder = sv.getHolder();
 
-        sv.setOnClickListener(this);
-        //sv.setOnTouchListener(this);
+        mGestureDetector =  new ScaleGestureDetector (sv.getContext(), new MyScaleGestureListener());
+
+        //sv.setOnClickListener(this);
+        sv.setOnTouchListener(this);
 
 
         holderCallback = new HolderCallback();
@@ -130,6 +133,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             lastZoom = savedInstanceState.getInt(ZOOM_STATE,0);
             Log.d(TAG,Integer.toString(lastZoom));
         }
+
     }
 
     private void openApplicationSetting(){
@@ -607,8 +611,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        Log.d(TAG,"TOUCH");
-        Log.d(TAG,motionEvent.toString());
+        //Log.d(TAG,"TOUCH");
+        //Log.d(TAG,motionEvent.toString());
+       // gdt.onTouchEvent(motionEvent);
+        if (mGestureDetector.onTouchEvent(motionEvent)) return true;
         return false;
     }
 
@@ -659,6 +665,43 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         @Override
         public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+
+        }
+    }
+
+    private float mOldScale;
+    private class MyScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+            Log.d(TAG,"ONSCALE");
+            Log.d(TAG,Float.toString(scaleGestureDetector.getScaleFactor()));
+            float scaleFactor=scaleGestureDetector.getScaleFactor();//получаем значение зума относительно предыдущего состояния
+            //получаем координаты фокальной точки - точки между пальцами
+            float focusX=scaleGestureDetector.getFocusX();
+            float focusY=scaleGestureDetector.getFocusY();
+            if (mOldScale>scaleFactor) {
+                Log.d(TAG,"MINUS");
+            }else {
+                Log.d(TAG,"PLUS");
+            }
+            mOldScale=scaleFactor;
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+            mOldScale=scaleGestureDetector.getScaleFactor();
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+            Log.d(TAG,"SCALEEND");
+           // Log.d(TAG+"END",Float.toString(scaleGestureDetector.getScaleFactor()));
+           // Log.d(TAG,Float.toString(scaleGestureDetector.getCurrentSpan()));
+           // Log.d(TAG,Float.toString(scaleGestureDetector.getPreviousSpan()));
+            Log.d(TAG,"EBD");
 
         }
     }
