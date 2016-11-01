@@ -685,6 +685,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             }else {
                 Log.d(TAG,"PLUS");
             }
+            Log.d(TAG,Float.toString(scaleGestureDetector.getCurrentSpan()));
             mOldScale=scaleFactor;
             return true;
         }
