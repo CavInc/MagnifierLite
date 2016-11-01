@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">المكبر الخفيفة</string>
+    <string name="x_1_00" translatable="false">x 1.00</string>
+    <string name="permision_str">للعمل بشكل صحيح تحتاج إلى إعطاء الأذونات المطلوبة</string>
+    <string name="save_file">"فيليه سافا"</string>
+    <string name="error_file">خطأ: فيليه سانتي سافا</string>
+    <string name="no_flash">لا فلاش في استنباط</string>
+    <string name="give_permision">إعطاء إذن</string>
+</resources>
