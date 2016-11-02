@@ -187,7 +187,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG,"PAUSE");
+       // Log.d(TAG,"PAUSE");
         if (camera != null) camera.release();
         camera = null;
     }
@@ -219,7 +219,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG,"STOP");
+       // Log.d(TAG,"STOP");
         stop=true;
     }
 
@@ -230,10 +230,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 changeFlash();
                 break;
             case R.id.zoomPlus:
-                setLensSize(MODE_PLUS);
+                setLensSize(MODE_PLUS,zoomOffset);
                 break;
             case R.id.zoomMunus:
-                setLensSize(MODE_MINUS);
+                setLensSize(MODE_MINUS,zoomOffset);
                 break;
             case R.id.surfaceView:
                 Log.d(TAG," SV CLICK");
@@ -365,7 +365,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private final int MODE_MINUS = 1;
     private int lastZoom = 0;
     // Работа с зумом
-    private void setLensSize(int mode){
+    private void setLensSize(int mode,int zoomOffset){
         if (isZoom) {
             Parameters params = camera.getParameters();
             //lastZoom = params.getZoom();
@@ -392,6 +392,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
         }
     }
+
 
     // Установка фокуса по касанию экрана
     private void setFocusManual(){
@@ -640,7 +641,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
-            Log.d(TAG,"sufraceCreated");
+           // Log.d(TAG,"sufraceCreated");
             /*
             try {
                 camera.setPreviewDisplay(holder); // сказали камере прослойку слушателя
@@ -674,19 +675,19 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-            Log.d(TAG,"ONSCALE");
-            Log.d(TAG,Float.toString(scaleGestureDetector.getScaleFactor()));
+           // Log.d(TAG,"ONSCALE");
+          //  Log.d(TAG,Float.toString(scaleGestureDetector.getScaleFactor()));
             float scaleFactor=scaleGestureDetector.getScaleFactor();//получаем значение зума относительно предыдущего состояния
             //получаем координаты фокальной точки - точки между пальцами
             float focusX=scaleGestureDetector.getFocusX();
             float focusY=scaleGestureDetector.getFocusY();
             if (mOldScale>scaleFactor) {
-                Log.d(TAG,"MINUS");
+                setLensSize(MODE_MINUS,1);
             }else {
-                Log.d(TAG,"PLUS");
+                setLensSize(MODE_PLUS,1);
             }
-            Log.d(TAG,Float.toString(scaleGestureDetector.getCurrentSpan()));
-            mOldScale=scaleFactor;
+          //  Log.d(TAG,Float.toString(scaleGestureDetector.getCurrentSpan()));
+            //mOldScale=scaleFactor;
             return true;
         }
 
@@ -698,12 +699,6 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         @Override
         public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
-            Log.d(TAG,"SCALEEND");
-           // Log.d(TAG+"END",Float.toString(scaleGestureDetector.getScaleFactor()));
-           // Log.d(TAG,Float.toString(scaleGestureDetector.getCurrentSpan()));
-           // Log.d(TAG,Float.toString(scaleGestureDetector.getPreviousSpan()));
-            Log.d(TAG,"EBD");
-
         }
     }
 }
