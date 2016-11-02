@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">拡大鏡</string>
     <string name="no_flash">工夫で発光禁止</string>
-    <string name="x_1_00" translatable="false">x 1.00</string>
     <string name="give_permision">許可します</string>
     <string name="permision_str">正しく必要な権限を与える必要が動作するように</string>
     <string name="error_file"> エラー：ファイルを保存することはできません</string>
