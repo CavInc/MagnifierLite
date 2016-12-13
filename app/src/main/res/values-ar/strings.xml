@@ -6,4 +6,5 @@
     <string name="error_file">خطأ: فيليه سانتي سافا</string>
     <string name="no_flash">لا فلاش في استنباط</string>
     <string name="give_permision">إعطاء إذن</string>
+    <string name="settings">إعدادات</string>
 </resources>

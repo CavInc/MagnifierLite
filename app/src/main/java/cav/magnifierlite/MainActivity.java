@@ -193,11 +193,17 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     }
 
     private void initalizeCamera(){
+        //TODO определение количества камер на устройстве
+        int cam_num =  Camera.getNumberOfCameras() ;
+        Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_num));
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         } else {
             camera = Camera.open();
         }
+
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
