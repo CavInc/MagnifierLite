@@ -22,6 +22,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.Surface;
@@ -253,6 +256,22 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 takePhoto();
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+       // return super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (item.getItemId()==R.id.setting){
+            Log.d(TAG,"SELECT IN MENU");
+        }
+        return super.onMenuItemSelected(featureId, item);
     }
 
     private boolean frezzeFlg = false;
