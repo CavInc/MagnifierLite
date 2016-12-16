@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="front_camera"
+        android:title="Front camera" />
+
+    <ListPreference>
+
+    </ListPreference>
+    <CheckBoxPreference
+        android:key="negativeVis"
+        android:title="Negative Visible"/>
+
+</PreferenceScreen>

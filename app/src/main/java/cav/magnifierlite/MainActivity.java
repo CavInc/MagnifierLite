@@ -2,6 +2,7 @@ package cav.magnifierlite;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 
 import android.os.Bundle;
@@ -49,7 +51,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private static final String ZOOM_STATE = "ZOOM_STATE";
     private final String TAG = "MAGNIFER";
-    private  final int CAMERA_ID = 0;
+    private  int CAMERA_ID = 0;
+
     private  final boolean FULL_SCREEN = true;
 
     private SurfaceView sv;
@@ -81,6 +84,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private List<Camera.Size> pictureSize;
 
     private ScaleGestureDetector mGestureDetector;
+
+    private SharedPreferences sp;
 
     private int zoomOffset=1;
 
@@ -136,6 +141,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             lastZoom = savedInstanceState.getInt(ZOOM_STATE,0);
             Log.d(TAG,Integer.toString(lastZoom));
         }
+        // получаем SharedPreferences, которое работает с файлом настроек
+       sp = PreferenceManager.getDefaultSharedPreferences(this);
 
     }
 
@@ -184,6 +191,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         } else {
             initalizeCamera();
         }
+
     }
 
 
@@ -199,13 +207,22 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         //TODO определение количества камер на устройстве
         int cam_num =  Camera.getNumberOfCameras() ;
         Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_num));
+        Boolean frontCamera = sp.getBoolean("front_camera", false);
+        Log.d(TAG+" frontCamera",Boolean.toString(frontCamera));
+        if (cam_num>1 && frontCamera){
+            CAMERA_ID = 1;
+        } else {
+            CAMERA_ID = 0;
+        }
+        camera = Camera.open(CAMERA_ID);
 
-
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         } else {
             camera = Camera.open();
         }
+        */
 
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
@@ -270,6 +287,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId()==R.id.setting){
             Log.d(TAG,"SELECT IN MENU");
+            Intent intent = new Intent(this,PrefActivity.class);
+            startActivity(intent);
         }
         return super.onMenuItemSelected(featureId, item);
     }
