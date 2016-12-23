@@ -10,4 +10,5 @@
     <color name="gray_light_transparent">#969c9c9c</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="androidcolor">#f2f1f1</color>
 </resources>

@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
         android:key="front_camera"
-        android:title="Front camera" />
+        android:title="@string/front_camera" />
 
     <ListPreference>
 
@@ -10,5 +10,8 @@
     <CheckBoxPreference
         android:key="negativeVis"
         android:title="Negative Visible"/>
+    <SwitchPreference
+        android:key="save_mode"
+        android:title="Сохранять в общую папку фотографий"/>
 
 </PreferenceScreen>

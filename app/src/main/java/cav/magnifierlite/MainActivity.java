@@ -1,11 +1,13 @@
 package cav.magnifierlite;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -14,6 +16,7 @@ import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
@@ -22,8 +25,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -138,8 +143,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,"FIRST START");
         }else {
             Log.d(TAG, "GET SAVE VALUE");
-            lastZoom = savedInstanceState.getInt(ZOOM_STATE,0);
-            Log.d(TAG,Integer.toString(lastZoom));
+            lastZoom[CAMERA_ID] = savedInstanceState.getInt(ZOOM_STATE,0);
+            Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
         }
         // получаем SharedPreferences, которое работает с файлом настроек
        sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -227,9 +232,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
-        if (lastZoom != 0) {
+        if (lastZoom[CAMERA_ID] != 0) {
             //TODO усановить сохраненный зум
-            setZoom(lastZoom);
+            setZoom(lastZoom[CAMERA_ID]);
         }
 
         if (stop) {
@@ -279,9 +284,43 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
-       // return super.onCreateOptionsMenu(menu);
+        setMenuBackground();
+        // return super.onCreateOptionsMenu(menu);
         return true;
     }
+
+    private void setMenuBackground() {
+        Log.d(TAG, "Enterting setMenuBackGround");
+        getLayoutInflater().setFactory(new LayoutInflater.Factory() {
+            @Override
+            public View onCreateView(String name, Context context, AttributeSet attrs) {
+                Log.d(TAG,name);
+                if (name.equalsIgnoreCase("com.android.internal.view.menu.ListMenuItemView")){
+                    Log.d(TAG,"SET BACKGROUND");
+                    try {
+                        LayoutInflater f = getLayoutInflater();
+                        final View view = f.createView(name, null, attrs);
+                        new Handler().post( new Runnable(){
+                            @Override
+                            public void run() {
+                                Log.d(TAG,"YES SET");
+                                view.setBackgroundResource( R.color.androidcolor);
+                                ((TextView) view).setTextColor(Color.YELLOW);
+                                ((TextView) view).setTextSize(18);
+                            }
+                        });
+                        return view;
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+                return null;
+            }
+        });
+    }
+
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
@@ -316,7 +355,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState");
-        outState.putInt(ZOOM_STATE,lastZoom);
+        outState.putInt(ZOOM_STATE,lastZoom[CAMERA_ID]);
     }
 
     private int maxWidth=0;
@@ -407,23 +446,23 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     private final int MODE_PLUS = 0;
     private final int MODE_MINUS = 1;
-    private int lastZoom = 0;
+    private int[] lastZoom = {0,0};
     // Работа с зумом
     private void setLensSize(int mode,int zoomOffset){
         if (isZoom) {
             Parameters params = camera.getParameters();
             //lastZoom = params.getZoom();
             if (mode==MODE_PLUS) {
-                lastZoom +=zoomOffset;
-                if (lastZoom>maxZoom) lastZoom=maxZoom;
+                lastZoom[CAMERA_ID] +=zoomOffset;
+                if (lastZoom[CAMERA_ID]>maxZoom) lastZoom[CAMERA_ID]=maxZoom;
             }
             if (mode==MODE_MINUS) {
-                lastZoom -=zoomOffset;
-                if (lastZoom<0) lastZoom=0;
+                lastZoom[CAMERA_ID] -=zoomOffset;
+                if (lastZoom[CAMERA_ID]<0) lastZoom[CAMERA_ID]=0;
             }
-            Log.d(TAG,Integer.toString(lastZoom));
-            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
-            params.setZoom(lastZoom);
+            Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom[CAMERA_ID])/100.0)));
+            params.setZoom(lastZoom[CAMERA_ID]);
             camera.setParameters(params);
         }
     }
@@ -433,7 +472,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Parameters params = camera.getParameters();
             params.setZoom(zoomValue);
             camera.setParameters(params);
-            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom[CAMERA_ID])/100.0)));
         }
     }
 

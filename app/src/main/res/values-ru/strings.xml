@@ -7,4 +7,5 @@
     <string name="error_file">Ошибка: не могу записать файл</string>
     <string name="save_file">Сохранен файл: </string>
     <string name="settings">Настройки</string>
+    <string name="front_camera">Фронтальная камера</string>
 </resources>

@@ -7,4 +7,5 @@
     <string name="no_flash">لا فلاش في استنباط</string>
     <string name="give_permision">إعطاء إذن</string>
     <string name="settings">إعدادات</string>
+    <string name="front_camera">الكاميرا الأمامية</string>
 </resources>

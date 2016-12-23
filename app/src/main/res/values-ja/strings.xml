@@ -7,4 +7,5 @@
     <string name="error_file"> エラー：ファイルを保存することはできません</string>
     <string name="save_file">"ファイルを保存： "</string>
     <string name="settings">設定</string>
+    <string name="front_camera">フロントカメラ</string>
 </resources>
