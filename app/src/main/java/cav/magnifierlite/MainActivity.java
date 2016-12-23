@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -295,11 +294,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             @Override
             public View onCreateView(String name, Context context, AttributeSet attrs) {
                 Log.d(TAG,name);
-                if (name.equalsIgnoreCase("com.android.internal.view.menu.ListMenuItemView")){
+                if (name.equalsIgnoreCase("com.android.internal.view.menu.ExpandedMenuView")){
                     Log.d(TAG,"SET BACKGROUND");
                     try {
                         LayoutInflater f = getLayoutInflater();
                         final View view = f.createView(name, null, attrs);
+                        /*
                         new Handler().post( new Runnable(){
                             @Override
                             public void run() {
@@ -309,6 +309,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                                 ((TextView) view).setTextSize(18);
                             }
                         });
+                        */
+                        view.setBackgroundResource(R.color.androidcolor);
+                        ((TextView) view).setTextColor(Color.RED);
                         return view;
 
                     } catch (Exception e){
@@ -328,6 +331,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,"SELECT IN MENU");
             Intent intent = new Intent(this,PrefActivity.class);
             startActivity(intent);
+        }
+        if (item.getItemId()==R.id.exit_app){
+            this.finish();
         }
         return super.onMenuItemSelected(featureId, item);
     }
