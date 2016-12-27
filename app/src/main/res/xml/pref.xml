@@ -4,12 +4,6 @@
         android:key="front_camera"
         android:title="@string/front_camera" />
 
-    <ListPreference>
-
-    </ListPreference>
-    <CheckBoxPreference
-        android:key="negativeVis"
-        android:title="Negative Visible"/>
     <SwitchPreference
         android:key="save_mode"
         android:title="Сохранять в общую папку фотографий"/>

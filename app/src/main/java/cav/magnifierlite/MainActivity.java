@@ -283,7 +283,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
-        setMenuBackground();
+        //setMenuBackground();
         // return super.onCreateOptionsMenu(menu);
         return true;
     }
@@ -294,7 +294,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             @Override
             public View onCreateView(String name, Context context, AttributeSet attrs) {
                 Log.d(TAG,name);
-                if (name.equalsIgnoreCase("com.android.internal.view.menu.ExpandedMenuView")){
+                if (name.equalsIgnoreCase("com.android.internal.view.menu.ListMenuItemView")){
                     Log.d(TAG,"SET BACKGROUND");
                     try {
                         LayoutInflater f = getLayoutInflater();

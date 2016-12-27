@@ -6,16 +6,19 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@color/menu_text_color</item>
     </style>
 
     <style name="FullScreen" parent="android:Theme.Holo.Light.NoActionBar">
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@null</item>
+        <item name="android:actionMenuTextColor">@color/menu_text_color</item>
     </style>
 
     <!-- My Style -->
     <style name="LayoutPanel">
 
     </style>
+
 
 </resources>
