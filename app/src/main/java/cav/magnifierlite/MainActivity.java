@@ -33,6 +33,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,8 @@ import java.util.List;
 public class MainActivity extends Activity implements View.OnClickListener,View.OnTouchListener,Camera.AutoFocusCallback {
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private static final String ZOOM_STATE = "ZOOM_STATE";
+    private static final int EXT_PANEL_VIEW = 0;
+    private static final int MAIN_PANEL_VIEW = 1;
     private final String TAG = "MAGNIFER";
     private  final int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
@@ -64,6 +67,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private ImageView frezzeBtn;
     private ImageView photoBtn;
 
+    private ImageView backBtn;
+    private ImageView extBtn;
+    private ImageView changeBtn;
+
 
     private boolean flashMode = false;
 
@@ -80,6 +87,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private ScaleGestureDetector mGestureDetector;
 
     private int zoomOffset=1;
+
+    private LinearLayout upPanel;
+    private LinearLayout downPanel;
+    private LinearLayout twoPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +120,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         frezzeBtn.setOnClickListener(this);
         photoBtn.setOnClickListener(this);
+
+        extBtn = (ImageView) findViewById(R.id.add_panel);
+        backBtn = (ImageView) findViewById(R.id.back_img);
+
+        extBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
 
         mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
 
@@ -246,8 +263,17 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 Log.d(TAG,"PHOTO");
                 takePhoto();
                 break;
+            case R.id.add_panel:
+                Log.d(TAG,"EXT PANEL");
+                changeViewPanel(EXT_PANEL_VIEW);
+                break;
+            case R.id.back_img:
+                Log.d(TAG,"BACK PANEL");
+                changeViewPanel(MAIN_PANEL_VIEW);
+                break;
         }
     }
+
 
     private boolean frezzeFlg = false;
 
@@ -636,6 +662,31 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             camera.cancelAutoFocus();
         }
     }
+
+
+    /**
+     * Менят видимость панелей с кнопками
+     * @param mode
+     */
+    private void changeViewPanel(int mode) {
+        upPanel = (LinearLayout) findViewById(R.id.up_button_panel);
+        downPanel = (LinearLayout) findViewById(R.id.down_button_panel);
+        twoPanel = (LinearLayout) findViewById(R.id.two_panel);
+
+        switch (mode){
+            case EXT_PANEL_VIEW:
+                upPanel.setVisibility(View.GONE);
+                downPanel.setVisibility(View.GONE);
+                twoPanel.setVisibility(View.VISIBLE);
+                break;
+            case MAIN_PANEL_VIEW:
+                upPanel.setVisibility(View.VISIBLE);
+                downPanel.setVisibility(View.VISIBLE);
+                twoPanel.setVisibility(View.GONE);
+                break;
+        }
+    }
+
 
     class HolderCallback implements SurfaceHolder.Callback {
 
