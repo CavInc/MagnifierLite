@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private static final int EXT_PANEL_VIEW = 0;
     private static final int MAIN_PANEL_VIEW = 1;
     private final String TAG = "MAGNIFER";
-    private  final int CAMERA_ID = 0;
+    private  int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
 
     private SurfaceView sv;
@@ -212,7 +212,13 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         camera = null;
     }
 
+
     private void initalizeCamera(){
+        //TODO определение количества камер на устройстве
+        int cam_num = Camera.getNumberOfCameras() ;
+        Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_num));
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         } else {
