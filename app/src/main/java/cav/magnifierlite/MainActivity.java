@@ -127,6 +127,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         extBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
 
+        changeBtn = (ImageView) findViewById(R.id.change_camera_img);
+        changeBtn.setOnClickListener(this);
+
         mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
 
         sv = (SurfaceView) findViewById(R.id.surfaceView);
@@ -270,6 +273,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             case R.id.back_img:
                 Log.d(TAG,"BACK PANEL");
                 changeViewPanel(MAIN_PANEL_VIEW);
+                break;
+            case R.id.change_camera_img:
+                // смена камеры фронт/задник
                 break;
         }
     }
