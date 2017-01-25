@@ -41,6 +41,17 @@
             android:orientation="vertical"
             style="@style/LayoutVerticalPanel">
             <ImageView
+                android:id="@+id/add_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_more_vert_black_24dp"
+                android:layout_weight="0.25"
+                android:padding="8dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"/>
+            <ImageView
                 android:id="@+id/photo_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,6 +78,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             style="@style/LayoutVerticalPanel">
+
             <ImageView
                 android:id="@+id/zoomPlus"
                 android:layout_width="wrap_content"

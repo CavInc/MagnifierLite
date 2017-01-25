@@ -48,6 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private static final String ZOOM_STATE = "ZOOM_STATE";
     private static final int EXT_PANEL_VIEW = 0;
     private static final int MAIN_PANEL_VIEW = 1;
+    private static final String CAMERA_SELECT_TYPE = "CAMERA_SELECT_TYPE";
     private final String TAG = "MAGNIFER";
     private  int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
@@ -77,6 +78,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private boolean isZoom = false;
     private boolean isFlashMode = false;
     private int maxZoom;
+
+    private int cam_count = 0;
 
     private List<String> colorEffect;
     private List<Integer> zoomRatio;
@@ -214,16 +217,23 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
 
     private void initalizeCamera(){
-        //TODO определение количества камер на устройстве
-        int cam_num = Camera.getNumberOfCameras() ;
-        Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_num));
+        //определение количества камер на устройстве
+        cam_count = Camera.getNumberOfCameras() ;
+        Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_count));
+        if (cam_count<2) {
+            // TODO здесь ставим неактивную иконку для поворота
+            changeBtn.setImageResource(R.drawable.ic_camera_front_gray_24dp1);
+        }
 
-
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         } else {
             camera = Camera.open();
         }
+        */
+        camera = Camera.open(CAMERA_ID);
+
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
@@ -282,6 +292,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 break;
             case R.id.change_camera_img:
                 // смена камеры фронт/задник
+                if (cam_count>1) {
+                    changeCamera();
+                }
                 break;
         }
     }
@@ -311,6 +324,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState");
         outState.putInt(ZOOM_STATE,lastZoom);
+        outState.putInt(CAMERA_SELECT_TYPE,CAMERA_ID);
     }
 
     private int maxWidth=0;
@@ -697,6 +711,20 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 twoPanel.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    /**
+     * Смена камеры для работы
+     */
+    private void changeCamera() {
+        // гасим текущую
+        if (camera != null) camera.release();
+        camera = null;
+
+        CAMERA_ID = CAMERA_ID ^ 1;
+        stop=true;
+        initalizeCamera();
+        //TODO изменение индикатора камеры
     }
 
 
