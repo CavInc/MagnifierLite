@@ -33,6 +33,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +46,11 @@ import java.util.List;
 public class MainActivity extends Activity implements View.OnClickListener,View.OnTouchListener,Camera.AutoFocusCallback {
     private static final int PERMISOPN_REQUEST_SETTING_CODE = 101;
     private static final String ZOOM_STATE = "ZOOM_STATE";
+    private static final int EXT_PANEL_VIEW = 0;
+    private static final int MAIN_PANEL_VIEW = 1;
+    private static final String CAMERA_SELECT_TYPE = "CAMERA_SELECT_TYPE";
     private final String TAG = "MAGNIFER";
-    private  final int CAMERA_ID = 0;
+    private  int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
 
     private SurfaceView sv;
@@ -64,12 +68,18 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private ImageView frezzeBtn;
     private ImageView photoBtn;
 
+    private ImageView backBtn;
+    private ImageView extBtn;
+    private ImageView changeBtn;
+
 
     private boolean flashMode = false;
 
     private boolean isZoom = false;
     private boolean isFlashMode = false;
     private int maxZoom;
+
+    private int cam_count = 0;
 
     private List<String> colorEffect;
     private List<Integer> zoomRatio;
@@ -80,6 +90,10 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private ScaleGestureDetector mGestureDetector;
 
     private int zoomOffset=1;
+
+    private LinearLayout upPanel;
+    private LinearLayout downPanel;
+    private LinearLayout twoPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +124,15 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         frezzeBtn.setOnClickListener(this);
         photoBtn.setOnClickListener(this);
 
+        extBtn = (ImageView) findViewById(R.id.add_panel);
+        backBtn = (ImageView) findViewById(R.id.back_img);
+
+        extBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
+
+        changeBtn = (ImageView) findViewById(R.id.change_camera_img);
+        changeBtn.setOnClickListener(this);
+
         mFrameLayout = (FrameLayout) findViewById(R.id.fLayout);
 
         sv = (SurfaceView) findViewById(R.id.surfaceView);
@@ -130,8 +153,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,"FIRST START");
         }else {
             Log.d(TAG, "GET SAVE VALUE");
-            lastZoom = savedInstanceState.getInt(ZOOM_STATE,0);
-            Log.d(TAG,Integer.toString(lastZoom));
+            lastZoom[CAMERA_ID] = savedInstanceState.getInt(ZOOM_STATE,0);
+            Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
         }
 
     }
@@ -192,18 +215,31 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         camera = null;
     }
 
+
     private void initalizeCamera(){
+        //определение количества камер на устройстве
+        cam_count = Camera.getNumberOfCameras() ;
+        Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_count));
+        if (cam_count<2) {
+            // TODO здесь ставим неактивную иконку для поворота
+            changeBtn.setImageResource(R.drawable.ic_camera_front_gray_24dp1);
+        }
+
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             camera = Camera.open(CAMERA_ID);
         } else {
             camera = Camera.open();
         }
+        */
+        camera = Camera.open(CAMERA_ID);
+
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
         setStartFocus();
-        if (lastZoom != 0) {
+        if (lastZoom[CAMERA_ID] != 0) {
             //TODO усановить сохраненный зум
-            setZoom(lastZoom);
+            setZoom(lastZoom[CAMERA_ID]);
         }
 
         if (stop) {
@@ -246,8 +282,23 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 Log.d(TAG,"PHOTO");
                 takePhoto();
                 break;
+            case R.id.add_panel:
+                Log.d(TAG,"EXT PANEL");
+                changeViewPanel(EXT_PANEL_VIEW);
+                break;
+            case R.id.back_img:
+                Log.d(TAG,"BACK PANEL");
+                changeViewPanel(MAIN_PANEL_VIEW);
+                break;
+            case R.id.change_camera_img:
+                // смена камеры фронт/задник
+                if (cam_count>1) {
+                    changeCamera();
+                }
+                break;
         }
     }
+
 
     private boolean frezzeFlg = false;
 
@@ -272,7 +323,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState");
-        outState.putInt(ZOOM_STATE,lastZoom);
+        outState.putInt(ZOOM_STATE,lastZoom[CAMERA_ID]);
+        outState.putInt(CAMERA_SELECT_TYPE,CAMERA_ID);
     }
 
     private int maxWidth=0;
@@ -305,7 +357,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         if (params.getFlashMode()!=null) {
             isFlashMode = true;
+            flashImgBtn.setImageResource(R.drawable.ic_flash_on_black_24dp);
        }else {
+            isFlashMode = false;
             flashImgBtn.setImageResource(R.drawable.ic_flash_on_gray_24dp1);
         }
        supportFocusMode = params.getSupportedFocusModes();
@@ -317,6 +371,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         // размеры подперживаемые камерой
         pictureSize =  params.getSupportedPictureSizes();
         for (Camera.Size l:pictureSize){
+            maxWidth = 0;
+
             Log.d(TAG+" SIZE:","WIDTH:"+Integer.toString(l.width)+" HEIGHT: "+Integer.toString(l.height));
             if  (maxWidth<l.width) {
                 maxWidth=l.width;
@@ -363,23 +419,23 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     private final int MODE_PLUS = 0;
     private final int MODE_MINUS = 1;
-    private int lastZoom = 0;
+    private int[] lastZoom = {0,0};
     // Работа с зумом
     private void setLensSize(int mode,int zoomOffset){
         if (isZoom) {
             Parameters params = camera.getParameters();
             //lastZoom = params.getZoom();
             if (mode==MODE_PLUS) {
-                lastZoom +=zoomOffset;
-                if (lastZoom>maxZoom) lastZoom=maxZoom;
+                lastZoom[CAMERA_ID] +=zoomOffset;
+                if (lastZoom[CAMERA_ID]>maxZoom) lastZoom[CAMERA_ID]=maxZoom;
             }
             if (mode==MODE_MINUS) {
-                lastZoom -=zoomOffset;
-                if (lastZoom<0) lastZoom=0;
+                lastZoom[CAMERA_ID] -=zoomOffset;
+                if (lastZoom[CAMERA_ID]<0) lastZoom[CAMERA_ID]=0;
             }
-            Log.d(TAG,Integer.toString(lastZoom));
-            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
-            params.setZoom(lastZoom);
+            Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom[CAMERA_ID])/100.0)));
+            params.setZoom(lastZoom[CAMERA_ID]);
             camera.setParameters(params);
         }
     }
@@ -389,7 +445,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Parameters params = camera.getParameters();
             params.setZoom(zoomValue);
             camera.setParameters(params);
-            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom)/100.0)));
+            zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom[CAMERA_ID])/100.0)));
         }
     }
 
@@ -636,6 +692,51 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             camera.cancelAutoFocus();
         }
     }
+
+
+    /**
+     * Менят видимость панелей с кнопками
+     * @param mode
+     */
+    private void changeViewPanel(int mode) {
+        upPanel = (LinearLayout) findViewById(R.id.up_button_panel);
+        downPanel = (LinearLayout) findViewById(R.id.down_button_panel);
+        twoPanel = (LinearLayout) findViewById(R.id.two_panel);
+
+        switch (mode){
+            case EXT_PANEL_VIEW:
+                upPanel.setVisibility(View.GONE);
+                downPanel.setVisibility(View.GONE);
+                twoPanel.setVisibility(View.VISIBLE);
+                break;
+            case MAIN_PANEL_VIEW:
+                upPanel.setVisibility(View.VISIBLE);
+                downPanel.setVisibility(View.VISIBLE);
+                twoPanel.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    /**
+     * Смена камеры для работы
+     */
+    private void changeCamera() {
+        // гасим текущую
+        if (camera != null) camera.release();
+        camera = null;
+
+        CAMERA_ID = CAMERA_ID ^ 1;
+        stop=true;
+        initalizeCamera();
+        //TODO изменение индикатора камеры
+        setZoom(1);
+        if (CAMERA_ID == 1 ){
+            changeBtn.setImageResource(R.drawable.ic_camera_rear_black_24dp);
+        } else {
+            changeBtn.setImageResource(R.drawable.ic_camera_front_black_24dp);
+        }
+    }
+
 
     class HolderCallback implements SurfaceHolder.Callback {
 
