@@ -371,6 +371,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         // размеры подперживаемые камерой
         pictureSize =  params.getSupportedPictureSizes();
         for (Camera.Size l:pictureSize){
+            maxWidth = 0;
+
             Log.d(TAG+" SIZE:","WIDTH:"+Integer.toString(l.width)+" HEIGHT: "+Integer.toString(l.height));
             if  (maxWidth<l.width) {
                 maxWidth=l.width;
@@ -727,6 +729,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         stop=true;
         initalizeCamera();
         //TODO изменение индикатора камеры
+        setZoom(1);
+        if (CAMERA_ID == 1 ){
+            changeBtn.setImageResource(R.drawable.ic_camera_rear_black_24dp);
+        } else {
+            changeBtn.setImageResource(R.drawable.ic_camera_front_black_24dp);
+        }
     }
 
 
