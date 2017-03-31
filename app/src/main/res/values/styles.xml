@@ -14,8 +14,22 @@
     </style>
 
     <!-- My Style -->
-    <style name="LayoutPanel">
+    <style name="LayoutHorizontalPanel">
+        <item name="android:paddingBottom">@dimen/space_size_16</item>
+        <item name="android:paddingTop">@dimen/space_size_16</item>
+        <item name="android:paddingLeft">@dimen/space_size_8</item>
+        <item name="android:paddingRight">@dimen/space_size_8</item>
+        <item name="android:layout_marginBottom">@dimen/space_size_8</item>
+        <item name="android:background">@color/gray_light_transparent</item>
+    </style>
 
+    <style name="LayoutVerticalPanel">
+        <item name="android:paddingLeft">@dimen/space_size_16</item>
+        <item name="android:paddingRight">@dimen/space_size_16</item>
+        <item name="android:paddingTop">@dimen/space_size_8</item>
+        <item name="android:paddingBottom">@dimen/space_size_8</item>
+        <item name="android:layout_marginRight">@dimen/space_size_8</item>
+        <item name="android:background">@color/gray_light_transparent</item>
     </style>
 
 </resources>

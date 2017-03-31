@@ -39,6 +39,7 @@
         android:orientation="vertical"
         android:layout_gravity="bottom">
         <LinearLayout
+            android:id="@+id/up_button_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -67,18 +68,24 @@
                 android:src="@drawable/ic_camera_alt_black_24dp"
                 android:layout_weight="0.25"
                 android:padding="8dp"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"/>
+            <ImageView
+                android:id="@+id/add_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_more_vert_black_24dp"
+                android:layout_weight="0.25"
+                android:padding="8dp"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/down_button_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-
-            android:paddingBottom="@dimen/space_size_16"
-            android:paddingTop="@dimen/space_size_16"
-            android:paddingLeft="@dimen/space_size_8"
-            android:paddingRight="@dimen/space_size_8"
-            android:layout_marginBottom="@dimen/space_size_8"
-            android:background="@color/gray_light_transparent">
+            style="@style/LayoutHorizontalPanel">
             <ImageView
                 android:id="@+id/flash_img"
                 android:layout_width="wrap_content"
@@ -109,6 +116,33 @@
                 android:src="@drawable/ic_zoom_in_black_24dp"
                 android:layout_weight="0.25"
                 android:padding="8dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/two_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            style="@style/LayoutHorizontalPanel"
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/back_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reply_black_24dp"
+                android:padding="8dp"
+                android:layout_weight="0.25"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"/>
+            <ImageView
+                android:id="@+id/change_camera_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_camera_front_black_24dp"
+                android:layout_weight="0.25"
+                android:padding="8dp"/>
+
         </LinearLayout>
     </LinearLayout>
 
