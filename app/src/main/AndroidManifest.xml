@@ -14,7 +14,9 @@
         android:icon="@mipmap/ic_launcher_m"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
+        <meta data android:name="android.max_aspect" android:value="2.1"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
