@@ -6,4 +6,6 @@
     <string name="permision_str">正しく必要な権限を与える必要が動作するように</string>
     <string name="error_file"> エラー：ファイルを保存することはできません</string>
     <string name="save_file">"ファイルを保存： "</string>
+    <string name="no_camera_permission">このアプリケーションは、カメラ権限を持たないため実行できません。 アプリケーションは終了します。</string>
+    <string name="ok">はい</string>
 </resources>

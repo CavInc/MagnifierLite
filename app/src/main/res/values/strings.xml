@@ -6,4 +6,6 @@
     <string name="permision_str">To work correctly you need to give the required permissions</string>
     <string name="error_file">Error: can\'t save file</string>
     <string name="save_file">"Save file: "</string>
+    <string name="ok">Ок</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
 </resources>
