@@ -160,6 +160,27 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
         }
 
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG,"A6+");
+
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
+
+            /*Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
+                    setAction(R.string.give_permision, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            openApplicationSetting();
+                        }
+                    }).show();
+                    */
+
+        } else {
+            initalizeCamera();
+        }
+
     }
 
     private void openApplicationSetting(){
@@ -203,26 +224,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onResume();
         Log.d(TAG,"RESUME");
 
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG,"A6+");
 
-            ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
-
-            /*Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
-                    setAction(R.string.give_permision, new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View view) {
-                            openApplicationSetting();
-                        }
-                    }).show();
-                    */
-
-        } else {
-            initalizeCamera();
-        }
     }
 
 
