@@ -177,6 +177,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         if (grantResults.length!=0){
             if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 initalizeCamera();
+                return;
             }
             if (grantResults[1]==PackageManager.PERMISSION_GRANTED){
                 // обработка разрешения на запись
@@ -189,7 +190,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("PC")
+        builder.setTitle(R.string.app_name)
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
@@ -209,7 +210,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             ActivityCompat.requestPermissions(this, new String[] {
                     android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
 
-            Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
+            /*Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
                     setAction(R.string.give_permision, new View.OnClickListener() {
 
                         @Override
@@ -217,6 +218,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                             openApplicationSetting();
                         }
                     }).show();
+                    */
 
         } else {
             initalizeCamera();
