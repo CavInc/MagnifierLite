@@ -6,4 +6,6 @@
     <string name="error_file">خطأ: فيليه سانتي سافا</string>
     <string name="no_flash">لا فلاش في استنباط</string>
     <string name="give_permision">إعطاء إذن</string>
+    <string name="no_camera_permission">لا يمكن تشغيل هذا التطبيق لأنه ليس لديه إذن الكاميرا. سوف التطبيق الآن الخروج.</string>
+    <string name="ok">على ما يرام 	 </string>
 </resources>

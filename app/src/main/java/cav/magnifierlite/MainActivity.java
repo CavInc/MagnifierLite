@@ -1,6 +1,8 @@
 package cav.magnifierlite;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -49,6 +51,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private static final int EXT_PANEL_VIEW = 0;
     private static final int MAIN_PANEL_VIEW = 1;
     private static final String CAMERA_SELECT_TYPE = "CAMERA_SELECT_TYPE";
+    private static final int PERMISSION_REQUEST_CODE = 102;
     private final String TAG = "MAGNIFER";
     private  int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
@@ -157,6 +160,27 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
         }
 
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG,"A6+");
+
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
+
+            /*Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
+                    setAction(R.string.give_permision, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            openApplicationSetting();
+                        }
+                    }).show();
+                    */
+
+        } else {
+            initalizeCamera();
+        }
+
     }
 
     private void openApplicationSetting(){
@@ -165,17 +189,32 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG," ON REQUEST PERMISSION");
-        if (requestCode == 102){
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // словили другое разрешение
+        if (requestCode != PERMISSION_REQUEST_CODE ) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+        if (grantResults.length!=0){
             if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 initalizeCamera();
+                return;
             }
             if (grantResults[1]==PackageManager.PERMISSION_GRANTED){
                 // обработка разрешения на запись
             }
         }
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.app_name)
+                .setMessage(R.string.no_camera_permission)
+                .setPositiveButton(R.string.ok, listener)
+                .show();
     }
 
 
@@ -185,25 +224,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         super.onResume();
         Log.d(TAG,"RESUME");
 
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG,"A6+");
 
-            ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},102);//  102 -число с потолка
-
-            Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
-                    setAction(R.string.give_permision, new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View view) {
-                            openApplicationSetting();
-                        }
-                    }).show();
-
-        } else {
-            initalizeCamera();
-        }
     }
 
 
