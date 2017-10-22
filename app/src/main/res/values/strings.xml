@@ -8,4 +8,6 @@
     <string name="save_file">"Save file: "</string>
     <string name="ok">Ок</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="no_write_permission">To be able to save a picture, you need a write permission for the memory card</string>
+    <string name="dialog_attention">Attention</string>
 </resources>

@@ -6,16 +6,20 @@ android {
             storeFile file('/home/cav/AndroidStudioProjects/AndroisKeyStoke.jks')
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "cav.magnifierlite"
         minSdkVersion 11
-        targetSdkVersion 23
-        versionCode 14
-        versionName '2.2.1'
+        targetSdkVersion 25
+        versionCode 15
+        versionName '2.2.2'
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -32,6 +36,6 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
 }

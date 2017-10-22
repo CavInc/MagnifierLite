@@ -8,4 +8,6 @@
     <string name="give_permision">إعطاء إذن</string>
     <string name="no_camera_permission">لا يمكن تشغيل هذا التطبيق لأنه ليس لديه إذن الكاميرا. سوف التطبيق الآن الخروج.</string>
     <string name="ok">على ما يرام 	 </string>
+    <string name="dialog_attention">انتباه</string>
+    <string name="no_write_permission">لتكون قادرة على حفظ صورة، تحتاج إلى إذن الكتابة لبطاقة الذاكرة</string>
 </resources>

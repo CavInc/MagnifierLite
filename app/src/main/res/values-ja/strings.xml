@@ -8,4 +8,6 @@
     <string name="save_file">"ファイルを保存： "</string>
     <string name="no_camera_permission">このアプリケーションは、カメラ権限を持たないため実行できません。 アプリケーションは終了します。</string>
     <string name="ok">はい</string>
+    <string name="dialog_attention">注意</string>
+    <string name="no_write_permission">画像を保存するには、メモリカードの書き込み権限が必要です</string>
 </resources>

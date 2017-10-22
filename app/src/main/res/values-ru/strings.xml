@@ -8,4 +8,6 @@
     <string name="save_file">Сохранен файл: </string>
     <string name="no_camera_permission">Это приложение не может работать, потому что у него нет разрешения камеры. Приложение будет закрыто</string>
     <string name="ok">ОК</string>
+    <string name="dialog_attention">Внимание</string>
+    <string name="no_write_permission">Для возможности сохранения картинки нужно, разрешение на запись для карты памяти</string>
 </resources>

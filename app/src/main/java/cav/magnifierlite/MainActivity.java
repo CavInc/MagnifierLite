@@ -82,6 +82,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private boolean isFlashMode = false;
     private int maxZoom;
 
+    private boolean isWritePermission = false;
+
     private int cam_count = 0;
 
     private List<String> colorEffect;
@@ -160,6 +162,13 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
         }
 
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            isWritePermission = true;
+            changeStatusPhotoButton(isWritePermission);
+        } else {
+            changeStatusPhotoButton(isWritePermission);
+        }
+
         if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG,"A6+");
@@ -200,10 +209,28 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 initalizeCamera();
                 return;
             }
-            if (grantResults[1]==PackageManager.PERMISSION_GRANTED){
+            if (grantResults[1]!=PackageManager.PERMISSION_GRANTED){
                 // обработка разрешения на запись
+                Log.d(TAG,"NO SAVE PERMISION");
+                isWritePermission = false;
+                changeStatusPhotoButton(isWritePermission);
+                final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle(R.string.dialog_attention)
+                        .setMessage(R.string.no_write_permission)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }).create();
+                dialog.show();
+                return;
+            } else {
+                isWritePermission = true;
+                changeStatusPhotoButton(isWritePermission);
             }
         }
+        changeStatusPhotoButton(isWritePermission);
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 finish();
@@ -222,20 +249,25 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG,"RESUME");
-
-
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-       // Log.d(TAG,"PAUSE");
         if (camera != null) camera.release();
         camera = null;
     }
 
+    private void changeStatusPhotoButton (boolean status) {
+        if (status) {
+            photoBtn.setImageResource(R.drawable.ic_camera_alt_black_24dp);
+            photoBtn.setEnabled(true);
+        } else {
+            photoBtn.setImageResource(R.drawable.ic_photo_camera_black_24dp);
+            photoBtn.setEnabled(false);
+        }
+    }
 
     private void initalizeCamera(){
         //определение количества камер на устройстве
