@@ -303,7 +303,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     }
 
-    private boolean stop=false;
+    private boolean stop = false;
 
     @Override
     protected void onStop() {
