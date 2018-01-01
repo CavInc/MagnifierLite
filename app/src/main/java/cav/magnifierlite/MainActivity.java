@@ -52,6 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private static final int MAIN_PANEL_VIEW = 1;
     private static final String CAMERA_SELECT_TYPE = "CAMERA_SELECT_TYPE";
     private static final int PERMISSION_REQUEST_CODE = 102;
+    private static final int PERMISSION_REQUEST_CODE_CAMERA = 103;
+    private static final int PERMISSION_REQUEST_CODE_SD = 104;
     private final String TAG = "MAGNIFER";
     private  int CAMERA_ID = 0;
     private  final boolean FULL_SCREEN = true;
@@ -179,11 +181,59 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         // словили другое разрешение
-        if (requestCode != PERMISSION_REQUEST_CODE ) {
+        /*
+        if (requestCode != PERMISSION_REQUEST_CODE  ) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             return;
         }
+        */
+
+        if (requestCode != PERMISSION_REQUEST_CODE_CAMERA && grantResults.length != 0) {
+            if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                if (camera != null) camera.release();
+                camera = null;
+                initalizeCamera();
+            }   else {
+                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.app_name)
+                        .setMessage(R.string.no_camera_permission)
+                        .setPositiveButton(R.string.ok, listener)
+                        .show();
+            }
+        }
+
+        if (requestCode != PERMISSION_REQUEST_CODE_SD && grantResults.length != 0) {
+            if (grantResults[0]!=PackageManager.PERMISSION_GRANTED){
+                // обработка разрешения на запись
+                Log.d(TAG,"NO SAVE PERMISION");
+                isWritePermission = false;
+                changeStatusPhotoButton(isWritePermission);
+                final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle(R.string.dialog_attention)
+                        .setMessage(R.string.no_write_permission)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }).create();
+                dialog.show();
+                return;
+            } else {
+                isWritePermission = true;
+                changeStatusPhotoButton(isWritePermission);
+            }
+        }
+
+        /*
         if (grantResults.length!=0){
+            System.out.println(grantResults);
             if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 if (camera != null) camera.release();
                 camera = null;
@@ -211,7 +261,9 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 changeStatusPhotoButton(isWritePermission);
             }
         }
-        changeStatusPhotoButton(isWritePermission);
+        */
+        //changeStatusPhotoButton(isWritePermission);
+        /*
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 finish();
@@ -223,6 +275,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
+        */
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 
@@ -230,14 +284,17 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onResume() {
         super.onResume();
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG,"A6+");
 
             ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
+                    android.Manifest.permission.CAMERA},PERMISSION_REQUEST_CODE_CAMERA);//  102 -число с потолка
         } else {
             initalizeCamera();
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE_SD);//  102 -число с потолка
         }
     }
 
