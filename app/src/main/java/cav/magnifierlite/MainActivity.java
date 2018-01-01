@@ -773,7 +773,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         //Log.d(TAG,"TOUCH");
         //Log.d(TAG,motionEvent.toString());
        // gdt.onTouchEvent(motionEvent);
-        if (mGestureDetector.onTouchEvent(motionEvent)) return true;
+        if (mGestureDetector != null && mGestureDetector.onTouchEvent(motionEvent)) return true;
         return false;
     }
 
