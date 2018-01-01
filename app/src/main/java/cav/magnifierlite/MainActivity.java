@@ -188,7 +188,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 if (camera != null) camera.release();
                 camera = null;
                 initalizeCamera();
-                return;
+                //return;
             }
             if (grantResults[1]!=PackageManager.PERMISSION_GRANTED){
                 // обработка разрешения на запись
