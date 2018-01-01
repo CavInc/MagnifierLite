@@ -169,27 +169,6 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             changeStatusPhotoButton(isWritePermission);
         }
 
-        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG,"A6+");
-
-            ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
-
-            /*Snackbar.make(mFrameLayout, R.string.permision_str,Snackbar.LENGTH_LONG).
-                    setAction(R.string.give_permision, new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View view) {
-                            openApplicationSetting();
-                        }
-                    }).show();
-                    */
-
-        } else {
-            initalizeCamera();
-        }
-
     }
 
     private void openApplicationSetting(){
@@ -206,6 +185,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         }
         if (grantResults.length!=0){
             if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                if (camera != null) camera.release();
+                camera = null;
                 initalizeCamera();
                 return;
             }
@@ -249,6 +230,15 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onResume() {
         super.onResume();
+        if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG,"A6+");
+
+            ActivityCompat.requestPermissions(this, new String[] {
+                    android.Manifest.permission.CAMERA,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);//  102 -число с потолка
+        } else {
+            initalizeCamera();
+        }
     }
 
 
@@ -271,12 +261,14 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
     private void initalizeCamera(){
         //определение количества камер на устройстве
+
         cam_count = Camera.getNumberOfCameras() ;
         Log.d(TAG+" CAMERA NUM :",Integer.toString(cam_count));
         if (cam_count<2) {
             // TODO здесь ставим неактивную иконку для поворота
             changeBtn.setImageResource(R.drawable.ic_camera_front_gray_24dp1);
         }
+        if (cam_count == 0) return;
 
         /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
