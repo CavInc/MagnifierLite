@@ -28,6 +28,23 @@
         android:scaleX="1"
         android:paddingLeft="@dimen/space_size_8"
         android:paddingTop="@dimen/space_size_8"/>
+    <TextView
+        android:id="@+id/max_min"
+        android:text="MAX"
+        android:textSize="24sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textColor="@color/white"
+        android:shadowColor="@color/gray"
+        android:shadowRadius="2.5"
+        android:scaleX="1"
+        android:scaleY="2"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="bottom"
+        android:background="@color/gray_light_transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

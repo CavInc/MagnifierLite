@@ -101,6 +101,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private LinearLayout upPanel;
     private LinearLayout downPanel;
     private LinearLayout twoPanel;
+    private TextView mMinMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +121,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         flashImgBtn = (ImageView) findViewById(R.id.flash_img);
         zoomPlusBtn = (ImageView) findViewById(R.id.zoomPlus);
         zoomMinusBtn = (ImageView) findViewById(R.id.zoomMunus);
+        mMinMax = (TextView) findViewById(R.id.max_min);
 
         flashImgBtn.setOnClickListener(this);
         zoomPlusBtn.setOnClickListener(this);
@@ -136,6 +138,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         extBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
+
+        mMinMax.setOnClickListener(this);
 
         changeBtn = (ImageView) findViewById(R.id.change_camera_img);
         changeBtn.setOnClickListener(this);
@@ -398,9 +402,24 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                     changeCamera();
                 }
                 break;
+            case R.id.max_min:
+                if (minMaxFlg) {
+                    setZoom(maxZoom);
+                    mMinMax.setText("MIN");
+                    lastZoom[CAMERA_ID] = maxZoom;
+                } else {
+                    setZoom(0);
+                    mMinMax.setText("MAX");
+                    lastZoom[CAMERA_ID] = 0;
+                }
+
+                minMaxFlg = !minMaxFlg;
+                zoomText.setText("x "+Float.toString((float) (zoomRatio.get(lastZoom[CAMERA_ID])/100.0)));
+                break;
         }
     }
 
+    private boolean minMaxFlg = true;
 
     private boolean frezzeFlg = false;
 

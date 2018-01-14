@@ -19,6 +19,23 @@
         android:layout_gravity="center"/>
 
     <TextView
+        android:id="@+id/max_min"
+        android:text="MAX"
+        android:textSize="24sp"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:textColor="@color/white"
+        android:shadowColor="@color/gray"
+        android:shadowRadius="2.5"
+        android:scaleX="1"
+        android:scaleY="2"
+        android:layout_marginLeft="8dp"
+        android:background="@color/gray_light_transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
         android:id="@+id/zoom_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
