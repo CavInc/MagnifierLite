@@ -103,6 +103,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private LinearLayout twoPanel;
     private TextView mMinMax;
 
+    private boolean lockRepeatPrivelege = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,12 +194,13 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         }
         */
 
-        if (requestCode != PERMISSION_REQUEST_CODE_CAMERA && grantResults.length != 0) {
+        if (requestCode == PERMISSION_REQUEST_CODE_CAMERA && grantResults.length != 0) {
             if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 if (camera != null) camera.release();
                 camera = null;
                 initalizeCamera();
             }   else {
+                lockRepeatPrivelege = true;
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finish();
@@ -209,12 +212,14 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                         .setMessage(R.string.no_camera_permission)
                         .setPositiveButton(R.string.ok, listener)
                         .show();
+                return;
             }
         }
 
-        if (requestCode != PERMISSION_REQUEST_CODE_SD && grantResults.length != 0) {
+        if (requestCode == PERMISSION_REQUEST_CODE_SD && grantResults.length != 0) {
             if (grantResults[0]!=PackageManager.PERMISSION_GRANTED){
                 // обработка разрешения на запись
+                lockRepeatPrivelege = true;
                 Log.d(TAG,"NO SAVE PERMISION");
                 isWritePermission = false;
                 changeStatusPhotoButton(isWritePermission);
@@ -224,7 +229,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                //finish();
                             }
                         }).create();
                 dialog.show();
@@ -280,7 +285,7 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 .setPositiveButton(R.string.ok, listener)
                 .show();
         */
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 
@@ -288,6 +293,12 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (lockRepeatPrivelege) {
+            changeStatusPhotoButton(isWritePermission);
+            return;
+        }
+
         if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG,"A6+");
 
