@@ -199,6 +199,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
                 if (camera != null) camera.release();
                 camera = null;
                 initalizeCamera();
+                onResume();
+
             }   else {
                 lockRepeatPrivelege = true;
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
