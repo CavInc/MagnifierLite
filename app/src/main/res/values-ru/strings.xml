@@ -10,4 +10,6 @@
     <string name="ok">ОК</string>
     <string name="dialog_attention">Внимание</string>
     <string name="no_write_permission">Для возможности сохранения картинки нужно, разрешение на запись для карты памяти</string>
+    <string name="dialog_close">Закрыть</string>
+    <string name="no_used_camera">Камера занята или невозможно получить к ней доступ</string>
 </resources>

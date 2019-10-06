@@ -351,7 +351,18 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             camera = Camera.open();
         }
         */
-        camera = Camera.open(CAMERA_ID);
+        try {
+            camera = Camera.open(CAMERA_ID);
+        } catch (Exception e){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.dialog_attention)
+                    .setMessage(R.string.no_used_camera)
+                    .setNegativeButton(R.string.dialog_close,null)
+                    .show();
+            stop = true;
+            return;
+
+        }
 
         setPreviewSize(FULL_SCREEN);
         checkPreferns();
@@ -910,8 +921,6 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
 
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-           // Log.d(TAG,"ONSCALE");
-          //  Log.d(TAG,Float.toString(scaleGestureDetector.getScaleFactor()));
             float scaleFactor=scaleGestureDetector.getScaleFactor();//получаем значение зума относительно предыдущего состояния
             //получаем координаты фокальной точки - точки между пальцами
             float focusX=scaleGestureDetector.getFocusX();

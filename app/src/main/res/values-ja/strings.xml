@@ -10,4 +10,6 @@
     <string name="ok">はい</string>
     <string name="dialog_attention">注意</string>
     <string name="no_write_permission">画像を保存するには、メモリカードの書き込み権限が必要です</string>
+    <string name="dialog_close">閉じる</string>
+    <string name="no_used_camera">カメラがビジーであるか、アクセスできません。</string>
 </resources>

@@ -10,4 +10,6 @@
     <string name="ok">على ما يرام 	 </string>
     <string name="dialog_attention">انتباه</string>
     <string name="no_write_permission">لتكون قادرة على حفظ صورة، تحتاج إلى إذن الكتابة لبطاقة الذاكرة</string>
+    <string name="dialog_close">قريب</string>
+    <string name="no_used_camera">الكاميرا مشغولة أو لا يمكن الوصول إليها.</string>
 </resources>
