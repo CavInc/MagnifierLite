@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 
@@ -674,14 +675,25 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     private Uri generateUri(){
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
             return null;
-        File path = new File (Environment.getExternalStorageDirectory(), "MagnifierLite");
-        // для общего каталога Pictures/
-        //File path = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
-        if (! path.exists()) {
-            if (!path.mkdirs()){
-                return null;
+
+        File path;
+        if (Build.VERSION.SDK_INT >= 30){
+            path = new File(this.getExternalFilesDir("MagnifierLite"),"MagnifierLite");
+            if (! path.exists()) {
+                path.mkdirs();
+            }
+        } else {
+            path = new File(Environment.getExternalStorageDirectory(), "MagnifierLite");
+            // для общего каталога Pictures/
+            //File path = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
+            if (!path.exists()) {
+                if (!path.mkdirs()) {
+                    return null;
+                }
             }
         }
+
+
         mPath = path.getPath();
         String timeStamp = String.valueOf(System.currentTimeMillis());
         File newFile = new File(path.getPath() + File.separator +"MF" +timeStamp + ".jpg");
