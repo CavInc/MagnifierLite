@@ -19,13 +19,13 @@
 
 #proguard-support-v7-appcompat.pro
 
--keep public class android.support.v7.widget.** { *; }
--keep public class android.support.v7.internal.widget.** { *; }
--keep public class android.support.v7.internal.view.menu.** { *; }
+#-keep public class android.support.v7.widget.** { *; }
+#-keep public class android.support.v7.internal.widget.** { *; }
+#-keep public class android.support.v7.internal.view.menu.** { *; }
 
--keep public class * extends android.support.v4.view.ActionProvider {
-    public <init>(android.content.Context);
-}
+#-keep public class * extends android.support.v4.view.ActionProvider {
+#    public <init>(android.content.Context);
+#}
 
 #proguard-support-design.pro
 
@@ -33,3 +33,12 @@
 -keep class android.support.design.** { *; }
 -keep interface android.support.design.** { *; }
 -keep public class android.support.design.R$* { *; }
+
+-dontwarn com.google.android.material.**
+-keep class com.google.android.material.** { *; }
+
+
+
+-dontwarn androidx.**
+-keep class androidx.** { *; }
+-keep interface androidx.** { *; }
