@@ -12,4 +12,5 @@
     <color name="white">#ffffff</color>
     <color name="androidcolor">#f2f1f1</color>
     <color name="menu_text_color">#ec5f5f</color>
+    <color name="splashscreen_background">#0BF60B</color>
 </resources>

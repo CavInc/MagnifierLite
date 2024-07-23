@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FullScreen" parent="android:Theme.Holo.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:actionMenuTextColor">@color/menu_text_color</item>
+        <item name="android:windowSplashScreenBackground">@color/splashscreen_background</item>
+    </style>
+</resources>

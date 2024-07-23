@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.SplashScreen;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -105,6 +106,8 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -167,12 +170,18 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
             Log.d(TAG,Integer.toString(lastZoom[CAMERA_ID]));
         }
 
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+        //TODO тут поставить проверку на версию и включать кнопку
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             isWritePermission = true;
             changeStatusPhotoButton(isWritePermission);
         } else {
-            changeStatusPhotoButton(isWritePermission);
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                isWritePermission = true;
+                changeStatusPhotoButton(isWritePermission);
+            } else {
+                changeStatusPhotoButton(isWritePermission);
+            }
         }
 
     }
