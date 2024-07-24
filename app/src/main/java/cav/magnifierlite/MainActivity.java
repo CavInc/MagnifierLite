@@ -2,18 +2,24 @@ package cav.magnifierlite;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 
 import android.os.Bundle;
@@ -36,6 +42,7 @@ import android.widget.Toast;
 import android.window.SplashScreen;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -671,12 +678,40 @@ public class MainActivity extends Activity implements View.OnClickListener,View.
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             Uri pictureFile = generateUri();
-            try {
-                savePhotoInFile(data, pictureFile);
-                showToast(getString(R.string.save_file) + pictureFile);
-                galleryAddPic(pictureFile.toString());
-            }catch (Exception e){
-                showToast(getString(R.string.error_file));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                String filename = "MF" + System.currentTimeMillis() + ".jpg";
+                ContentResolver contentResolver = getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/MagnifierLite"); // Папка для вашего приложения
+
+                Uri uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    // Открываем поток для записи
+                    //savePhotoInFile(data,uri);
+                    OutputStream outputStream = contentResolver.openOutputStream(uri);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    outputStream.close();
+
+                    // Уведомляем систему о том, что новое изображение добавлено
+                    MediaScannerConnection.scanFile(MainActivity.this, new String[]{uri.toString()}, null, null);
+
+                    Toast.makeText(MainActivity.this, "Изображение сохранено в галерее", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "Ошибка при сохранении изображения", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                try {
+                    savePhotoInFile(data, pictureFile);
+                    showToast(getString(R.string.save_file) + pictureFile);
+                    galleryAddPic(pictureFile.toString());
+                } catch (Exception e) {
+                    showToast(getString(R.string.error_file));
+                }
             }
             camera.startPreview();
         }
