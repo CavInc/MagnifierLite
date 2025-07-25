@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 34
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 35
     defaultConfig {
         applicationId "cav.magnifierlite"
         minSdkVersion 18
-        targetSdkVersion 34
-        versionCode 24
-        versionName '2.5.0'
+        targetSdkVersion 35
+        versionCode 25
+        versionName '2.6.0'
         project.ext.set("archivesBaseName", "MagnifierLite-" + defaultConfig.versionName);
         resConfigs "en", "ru"
     }
@@ -29,11 +28,17 @@ android {
     }
     productFlavors {
     }
+    namespace 'cav.magnifierlite'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
 }
