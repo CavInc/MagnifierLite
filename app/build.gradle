@@ -5,10 +5,10 @@ android {
     defaultConfig {
         applicationId "cav.magnifierlite"
         minSdkVersion 18
-        targetSdkVersion 35
-        versionCode 25
-        versionName '2.6.0'
-        project.ext.set("archivesBaseName", "MagnifierLite-" + defaultConfig.versionName);
+        targetSdkVersion 36
+        versionCode 26
+        versionName '2.7.0'
+        project.ext.set("archivesBaseName", "MagnifierLite-" + defaultConfig.versionName)
         resConfigs "en", "ru"
     }
     buildTypes {
